@@ -29,14 +29,14 @@ interface Customer {
   email: string;
   phone: string;
   joinDate: string;
-  totalOrders: number;
-  totalSpent: number;
-  lastOrder: string;
+  totalOrders?: number;
+  totalSpent?: number;
+  lastOrder?: string;
   status: 'active' | 'inactive' | 'suspended' | 'pending';
   avatar: string;
   role: 'customer' | 'admin' | 'moderator';
   verified: boolean;
-  lastLogin: string;
+  lastLogin?: string;
   address?: {
     street: string;
     city: string;
@@ -313,7 +313,7 @@ export default function CustomersPage() {
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Revenue</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  ${customers.reduce((sum, c) => sum + (c.totalSpent || 0), 0).toLocaleString()}
+                  ${(customers.reduce((sum, c) => sum + (c.totalSpent || 0), 0) || 0).toLocaleString()}
                 </p>
               </div>
               <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
@@ -542,11 +542,11 @@ export default function CustomersPage() {
                         <td className="px-6 py-4">
                           <div className="flex flex-col">
                             <span className="text-sm font-bold text-green-600">
-                              ${customer.totalSpent.toLocaleString()}
+                              ${(customer.totalSpent || 0).toLocaleString()}
                             </span>
                             {customer.totalOrders > 0 && (
                               <span className="text-xs text-gray-500">
-                                Avg: ${(customer.totalSpent / customer.totalOrders).toFixed(2)}
+                                Avg: ${((customer.totalSpent || 0) / customer.totalOrders).toFixed(2)}
                               </span>
                             )}
                           </div>
@@ -672,7 +672,7 @@ export default function CustomersPage() {
                           <DollarSign className="w-4 h-4 text-green-500" />
                           <span className="text-xs text-green-600">Spent</span>
                         </div>
-                        <p className="text-sm font-bold text-green-900">${customer.totalSpent.toLocaleString()}</p>
+                        <p className="text-sm font-bold text-green-900">${(customer.totalSpent || 0).toLocaleString()}</p>
                       </div>
                     </div>
                   </div>
