@@ -47,12 +47,10 @@ function wishlistReducer(state: WishlistState, action: WishlistAction): Wishlist
       );
 
       if (existingItem) {
-        toast.error('Item is already in your wishlist');
         return state;
       }
 
       const newItems = [...state.items, action.payload];
-      toast.success(`Added ${action.payload.name} to wishlist`);
       
       return {
         ...state,
@@ -62,7 +60,6 @@ function wishlistReducer(state: WishlistState, action: WishlistAction): Wishlist
 
     case 'REMOVE_ITEM': {
       const updatedItems = state.items.filter(item => item.id !== action.payload);
-      toast.success('Item removed from wishlist');
       
       return {
         ...state,
@@ -71,7 +68,6 @@ function wishlistReducer(state: WishlistState, action: WishlistAction): Wishlist
     }
 
     case 'CLEAR_WISHLIST':
-      toast.success('Wishlist cleared');
       return {
         ...state,
         items: [],
@@ -144,15 +140,30 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   }, [state.items]);
 
   const addItem = (item: Omit<WishlistItem, 'addedAt'>) => {
+    const existingItem = state.items.find(existing => 
+      existing.id === item.id &&
+      existing.variant === item.variant &&
+      existing.size === item.size &&
+      existing.color === item.color
+    );
+
+    if (existingItem) {
+      toast.error('Item is already in your wishlist');
+      return;
+    }
+
     dispatch({ type: 'ADD_ITEM', payload: { ...item, addedAt: new Date() } });
+    toast.success(`Added ${item.name} to wishlist`);
   };
 
   const removeItem = (id: string) => {
     dispatch({ type: 'REMOVE_ITEM', payload: id });
+    toast.success('Item removed from wishlist');
   };
 
   const clearWishlist = () => {
     dispatch({ type: 'CLEAR_WISHLIST' });
+    toast.success('Wishlist cleared');
   };
 
   const toggleVisibility = () => {

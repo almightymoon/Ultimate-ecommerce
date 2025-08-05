@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getProductsCollection } from '@/utils/mongodb';
+import { getCollection } from '@/lib/database';
 
 // Fallback sample products if database is not available
 const fallbackProducts = [
@@ -9,7 +9,11 @@ const fallbackProducts = [
     price: 1299.99,
     originalPrice: 1499.99,
     category: "smartphones",
-    image: "📱",
+    image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600&h=600&fit=crop&crop=center",
+    images: [
+      "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600&h=600&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&h=600&fit=crop&crop=center"
+    ],
     description: "The most advanced iPhone ever with A17 Pro chip, titanium design, and 5x optical zoom.",
     rating: 4.9,
     reviews: 1247,
@@ -22,7 +26,11 @@ const fallbackProducts = [
     price: 1999.99,
     originalPrice: 2199.99,
     category: "laptops",
-    image: "💻",
+    image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&h=600&fit=crop&crop=center",
+    images: [
+      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&h=600&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&h=600&fit=crop&crop=center"
+    ],
     description: "Next-generation performance with M3 Pro chip for professionals.",
     rating: 4.8,
     reviews: 892,
@@ -35,7 +43,11 @@ const fallbackProducts = [
     price: 399.99,
     originalPrice: 449.99,
     category: "headphones",
-    image: "🎧",
+    image: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=600&h=600&fit=crop&crop=center",
+    images: [
+      "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=600&h=600&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=600&fit=crop&crop=center"
+    ],
     description: "Industry-leading noise canceling with Dual Noise Sensor technology.",
     rating: 4.7,
     reviews: 1567,
@@ -48,7 +60,11 @@ const fallbackProducts = [
     price: 399.99,
     originalPrice: 449.99,
     category: "smartwatches",
-    image: "⌚",
+    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=600&fit=crop&crop=center",
+    images: [
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=600&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=600&h=600&fit=crop&crop=center"
+    ],
     description: "Advanced health monitoring with ECG and blood oxygen tracking.",
     rating: 4.6,
     reviews: 743,
@@ -61,7 +77,11 @@ const fallbackProducts = [
     price: 2499.99,
     originalPrice: 2799.99,
     category: "cameras",
-    image: "📷",
+    image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600&h=600&fit=crop&crop=center",
+    images: [
+      "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600&h=600&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600&h=600&fit=crop&crop=center"
+    ],
     description: "Full-frame mirrorless camera with 4K video recording and advanced autofocus.",
     rating: 4.5,
     reviews: 234,
@@ -74,7 +94,11 @@ const fallbackProducts = [
     price: 499.99,
     originalPrice: 599.99,
     category: "gaming",
-    image: "🎮",
+    image: "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=600&h=600&fit=crop&crop=center",
+    images: [
+      "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=600&h=600&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=600&fit=crop&crop=center"
+    ],
     description: "Next-gen gaming with lightning-fast loading and ray tracing.",
     rating: 4.9,
     reviews: 2156,
@@ -88,6 +112,7 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get('category');
     const search = searchParams.get('search');
+    const featured = searchParams.get('featured');
     const sort = searchParams.get('sort') || 'name';
     const order = searchParams.get('order') || 'asc';
     const limit = parseInt(searchParams.get('limit')) || 20;
@@ -99,13 +124,17 @@ export async function GET(request) {
 
     try {
       // Try to get products from database
-      const collection = await getProductsCollection();
+      const collection = await getCollection('products');
       
       // Build query
       let query = {};
       
       if (category && category !== 'all') {
         query.category = category;
+      }
+      
+      if (featured === 'true') {
+        query.featured = true;
       }
       
       if (search) {

@@ -3,7 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
+import { useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
+import LoadingSpinner from '@/components/LoadingSpinner';
+import { Search, Filter, Grid, List, Heart, ShoppingCart, Eye, Star, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface Category {
   id: string;
@@ -18,120 +22,48 @@ interface Category {
 export default function CategoriesPage() {
   const { addItem } = useCart();
   const { addItem: addToWishlist, isInWishlist, removeItem: removeFromWishlist } = useWishlist();
+  const searchParams = useSearchParams();
+  
   const [categories, setCategories] = useState<Category[]>([]);
   const [filteredCategories, setFilteredCategories] = useState<Category[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
   const [selectedFilter, setSelectedFilter] = useState('all');
-  const [isLoading, setIsLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [loading, setLoading] = useState(true);
 
-  // Simulate categories data loading
+  // Fetch categories data
   useEffect(() => {
-    setTimeout(() => {
-      const mockCategories: Category[] = [
-        {
-          id: 'smartphones',
-          name: 'Smartphones',
-          description: 'Latest mobile phones and accessories from top brands',
-          image: '📱',
-          productCount: 156,
-          featured: true,
-          subcategories: ['iPhone', 'Samsung', 'Google Pixel', 'OnePlus', 'Accessories']
-        },
-        {
-          id: 'laptops',
-          name: 'Laptops & Computers',
-          description: 'High-performance laptops, desktops, and computing accessories',
-          image: '💻',
-          productCount: 89,
-          featured: true,
-          subcategories: ['MacBook', 'Dell', 'HP', 'Lenovo', 'Gaming Laptops']
-        },
-        {
-          id: 'headphones',
-          name: 'Headphones & Audio',
-          description: 'Premium audio equipment for music lovers and professionals',
-          image: '🎧',
-          productCount: 234,
-          featured: true,
-          subcategories: ['Wireless', 'Noise Cancelling', 'Gaming', 'Studio', 'Sport']
-        },
-        {
-          id: 'cameras',
-          name: 'Cameras & Photography',
-          description: 'Professional cameras, lenses, and photography equipment',
-          image: '📷',
-          productCount: 67,
-          featured: false,
-          subcategories: ['DSLR', 'Mirrorless', 'Action Cameras', 'Lenses', 'Accessories']
-        },
-        {
-          id: 'smartwatches',
-          name: 'Smartwatches & Wearables',
-          description: 'Smart watches, fitness trackers, and wearable technology',
-          image: '⌚',
-          productCount: 123,
-          featured: true,
-          subcategories: ['Apple Watch', 'Samsung', 'Fitbit', 'Garmin', 'Accessories']
-        },
-        {
-          id: 'gaming',
-          name: 'Gaming & Entertainment',
-          description: 'Gaming consoles, accessories, and entertainment systems',
-          image: '🎮',
-          productCount: 98,
-          featured: false,
-          subcategories: ['PlayStation', 'Xbox', 'Nintendo', 'PC Gaming', 'Accessories']
-        },
-        {
-          id: 'speakers',
-          name: 'Speakers & Sound',
-          description: 'Home audio systems, portable speakers, and sound equipment',
-          image: '🔊',
-          productCount: 145,
-          featured: false,
-          subcategories: ['Bluetooth Speakers', 'Home Theater', 'Portable', 'Smart Speakers']
-        },
-        {
-          id: 'tablets',
-          name: 'Tablets & iPads',
-          description: 'Tablets, iPads, and mobile computing devices',
-          image: '📱',
-          productCount: 78,
-          featured: false,
-          subcategories: ['iPad', 'Samsung Galaxy', 'Amazon Fire', 'Accessories']
-        },
-        {
-          id: 'accessories',
-          name: 'Accessories & Peripherals',
-          description: 'Essential accessories for all your devices',
-          image: '🔌',
-          productCount: 456,
-          featured: false,
-          subcategories: ['Chargers', 'Cables', 'Cases', 'Stands', 'Cables']
-        },
-        {
-          id: 'smart-home',
-          name: 'Smart Home',
-          description: 'Smart home devices and automation systems',
-          image: '🏠',
-          productCount: 89,
-          featured: false,
-          subcategories: ['Smart Speakers', 'Security', 'Lighting', 'Thermostats']
-        },
-        {
-          id: 'drones',
-          name: 'Drones & RC',
-          description: 'Drones, remote control vehicles, and aerial photography',
-          image: '🚁',
-          productCount: 34,
-          featured: false,
-          subcategories: ['Camera Drones', 'Racing Drones', 'RC Cars', 'Accessories']
-        }
-      ];
-      setCategories(mockCategories);
-      setFilteredCategories(mockCategories);
-      setIsLoading(false);
-    }, 1000);
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch categories from API
+        const response = await fetch('/api/categories');
+        const categoriesData = await response.json();
+        
+        // Transform the data to match our interface
+        const transformedCategories: Category[] = categoriesData.map((cat: any) => ({
+          id: cat.id,
+          name: cat.name,
+          description: cat.description,
+          image: cat.image,
+          productCount: cat.productCount || 0,
+          featured: cat.featured || false,
+          subcategories: cat.subcategories || []
+        }));
+        
+        setCategories(transformedCategories);
+        setFilteredCategories(transformedCategories);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        setCategories([]);
+        setFilteredCategories([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
   }, []);
 
   // Filter categories based on search and filter
@@ -155,270 +87,243 @@ export default function CategoriesPage() {
     setFilteredCategories(filtered);
   }, [categories, searchTerm, selectedFilter]);
 
-  if (isLoading) {
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      const searchParams = new URLSearchParams();
+      searchParams.set('search', searchTerm.trim());
+      window.location.href = `/categories?${searchParams.toString()}`;
+    }
+  };
+
+  if (loading) {
     return (
-      <div style={{ fontFamily: 'Inter, sans-serif', background: '#f8fafc', minHeight: '100vh' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
-          <div style={{ textAlign: 'center', padding: '4rem' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
-            <p style={{ color: '#64748b', fontSize: '1.125rem' }}>Loading categories...</p>
-          </div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+        <Header />
+        <div className="pt-32">
+          <LoadingSpinner />
         </div>
       </div>
     );
   }
 
   return (
-    <div style={{ fontFamily: 'Inter, sans-serif', background: '#f8fafc', minHeight: '100vh' }}>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <Header />
-
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
-        {/* Hero Section */}
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <h1 style={{ fontSize: '3.5rem', fontWeight: '700', color: '#111827', marginBottom: '1rem' }}>
-            Browse <span style={{
-              background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}>Categories</span>
-          </h1>
-          <p style={{ fontSize: '1.25rem', color: '#6b7280', maxWidth: '600px', margin: '0 auto', lineHeight: '1.6' }}>
-            Discover our comprehensive range of products organized by category. Find exactly what you're looking for.
-          </p>
+      
+      {/* Hero Section */}
+      <section className="pt-32 pb-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-6">
+              Browse Categories
+            </h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Discover our comprehensive range of products organized by category. Find exactly what you're looking for.
+            </p>
+          </div>
         </div>
+      </section>
 
-        {/* Search and Filter */}
-        <div style={{ background: 'white', borderRadius: '16px', padding: '2rem', marginBottom: '3rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '2rem', alignItems: 'center' }}>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#374151', fontWeight: '500' }}>
-                Search Categories
-              </label>
-              <input
-                type="text"
-                placeholder="Search by category name, description, or subcategory..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '8px',
-                  fontSize: '1rem'
-                }}
-              />
-            </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#374151', fontWeight: '500' }}>
-                Filter
-              </label>
-              <select
-                value={selectedFilter}
-                onChange={(e) => setSelectedFilter(e.target.value)}
-                style={{
-                  padding: '0.75rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '8px',
-                  fontSize: '1rem',
-                  background: 'white',
-                  minWidth: '150px'
-                }}
-              >
-                <option value="all">All Categories</option>
-                <option value="featured">Featured Only</option>
-              </select>
+      {/* Filters Section */}
+      <section className="pb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-lg">
+            <div className="flex flex-col lg:flex-row gap-6 items-center">
+              {/* Search */}
+              <div className="flex-1 w-full lg:w-auto">
+                <form onSubmit={handleSearch} className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <input
+                    type="text"
+                    placeholder="Search categories..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 bg-white/80 backdrop-blur-sm border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+                  />
+                </form>
+              </div>
+
+              {/* Filter */}
+              <div className="flex gap-4">
+                <select
+                  value={selectedFilter}
+                  onChange={(e) => setSelectedFilter(e.target.value)}
+                  className="px-4 py-3 bg-white/80 backdrop-blur-sm border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900"
+                >
+                  <option key="all" value="all">All Categories</option>
+                  <option key="featured" value="featured">Featured Only</option>
+                </select>
+
+                {/* View Mode */}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setViewMode('grid')}
+                    className={`p-2 rounded-lg transition-all duration-300 ${
+                      viewMode === 'grid'
+                        ? 'bg-purple-500 text-white'
+                        : 'bg-white/80 backdrop-blur-sm border border-white/20 text-gray-800 hover:bg-purple-50'
+                    }`}
+                  >
+                    <Grid className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode('list')}
+                    className={`p-2 rounded-lg transition-all duration-300 ${
+                      viewMode === 'list'
+                        ? 'bg-purple-500 text-white'
+                        : 'bg-white/80 backdrop-blur-sm border border-white/20 text-gray-800 hover:bg-purple-50'
+                    }`}
+                  >
+                    <List className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Results Count */}
-        <div style={{ marginBottom: '2rem' }}>
-          <p style={{ color: '#6b7280', fontSize: '1rem' }}>
-            Showing {filteredCategories.length} of {categories.length} categories
-          </p>
+      {/* Results Count */}
+      <section className="pb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl font-bold text-gray-900">
+              {filteredCategories.length} categories found
+            </h2>
+          </div>
         </div>
+      </section>
 
-        {/* Categories Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>
-          {filteredCategories.map((category) => (
-            <div key={category.id} style={{
-              background: 'white',
-              borderRadius: '16px',
-              padding: '2rem',
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              transition: 'all 0.3s ease',
-              border: category.featured ? '2px solid #22c55e' : '1px solid #e5e7eb'
-            }} onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-8px)';
-              e.currentTarget.style.boxShadow = '0 20px 25px rgba(0, 0, 0, 0.1)';
-            }} onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <div style={{
-                  width: '64px',
-                  height: '64px',
-                  background: 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)',
-                  borderRadius: '16px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '2rem',
-                  marginRight: '1rem'
-                }}>
-                  {category.image}
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-                    <h3 style={{ fontSize: '1.5rem', fontWeight: '600', color: '#111827' }}>
-                      {category.name}
-                    </h3>
-                    {category.featured && (
-                      <span style={{
-                        background: '#22c55e',
-                        color: 'white',
-                        padding: '0.25rem 0.5rem',
-                        borderRadius: '4px',
-                        fontSize: '0.75rem',
-                        fontWeight: '500'
-                      }}>
+      {/* Categories Grid */}
+      <section className="pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {filteredCategories.length === 0 ? (
+            <div className="text-center text-gray-600 text-xl py-20">
+              <div className="text-6xl mb-4">🔍</div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">No categories found</h3>
+              <p className="text-gray-600 mb-8">
+                Try adjusting your search terms or filters to find what you're looking for.
+              </p>
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setSelectedFilter('all');
+                }}
+                className="px-6 py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition-colors duration-300"
+              >
+                Clear Filters
+              </button>
+            </div>
+          ) : (
+            <div className={`grid gap-8 ${
+              viewMode === 'grid'
+                ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                : 'grid-cols-1'
+            }`}>
+              {filteredCategories.map((category, index) => (
+                <motion.div
+                  key={category.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="group relative bg-white border border-gray-100 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden transform-gpu"
+                >
+                  {/* Featured Badge */}
+                  {category.featured && (
+                    <div className="absolute top-4 left-4 z-10">
+                      <span className="px-3 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-500">
                         Featured
                       </span>
-                    )}
-                  </div>
-                  <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
-                    {category.productCount} products
-                  </p>
-                </div>
-              </div>
-
-              <p style={{ color: '#4b5563', lineHeight: '1.6', marginBottom: '1.5rem' }}>
-                {category.description}
-              </p>
-
-              <div style={{ marginBottom: '1.5rem' }}>
-                <h4 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#374151', marginBottom: '0.75rem' }}>
-                  Popular Subcategories:
-                </h4>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                  {category.subcategories.slice(0, 4).map((subcategory, index) => (
-                    <span key={index} style={{
-                      background: '#f3f4f6',
-                      color: '#374151',
-                      padding: '0.25rem 0.5rem',
-                      borderRadius: '4px',
-                      fontSize: '0.75rem',
-                      fontWeight: '500'
-                    }}>
-                      {subcategory}
-                    </span>
-                  ))}
-                  {category.subcategories.length > 4 && (
-                    <span style={{
-                      background: '#f3f4f6',
-                      color: '#6b7280',
-                      padding: '0.25rem 0.5rem',
-                      borderRadius: '4px',
-                      fontSize: '0.75rem'
-                    }}>
-                      +{category.subcategories.length - 4} more
-                    </span>
+                    </div>
                   )}
-                </div>
-              </div>
 
-              <a href={`/products?category=${category.id}`} style={{
-                display: 'inline-block',
-                padding: '0.75rem 1.5rem',
-                backgroundColor: '#22c55e',
-                color: 'white',
-                textDecoration: 'none',
-                borderRadius: '8px',
-                fontWeight: '600',
-                transition: 'all 0.2s ease'
-              }} onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#16a34a';
-              }} onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#22c55e';
-              }}>
-                Browse {category.name}
+                  {/* Category Content */}
+                  <div className="p-6">
+                    <div className="flex items-center mb-4">
+                      <div className="w-16 h-16 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl flex items-center justify-center text-3xl mr-4">
+                        {category.image}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-gray-900 mb-1">
+                          {category.name}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          {category.productCount} products
+                        </p>
+                      </div>
+                    </div>
+
+                    <p className="text-gray-700 mb-4 line-clamp-2">
+                      {category.description}
+                    </p>
+
+                    {/* Subcategories */}
+                    <div className="mb-6">
+                      <h4 className="text-sm font-semibold text-gray-900 mb-3">
+                        Popular Subcategories:
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        {category.subcategories.slice(0, 4).map((subcategory, idx) => (
+                          <span
+                            key={idx}
+                            className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-lg font-medium"
+                          >
+                            {subcategory}
+                          </span>
+                        ))}
+                        {category.subcategories.length > 4 && (
+                          <span className="px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded-lg">
+                            +{category.subcategories.length - 4} more
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Browse Button */}
+                    <a
+                      href={`/products?category=${category.id}`}
+                      className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 group-hover:shadow-lg"
+                    >
+                      Browse {category.name}
+                      <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                    </a>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white border border-gray-200 rounded-3xl p-8 shadow-lg text-center">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Can't Find What You're Looking For?
+            </h2>
+            <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+              Browse our complete product catalog or contact our support team for assistance.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a
+                href="/products"
+                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
+              >
+                View All Products
+              </a>
+              <a
+                href="/contact"
+                className="px-8 py-4 border-2 border-purple-600 text-purple-600 font-semibold rounded-xl hover:bg-purple-600 hover:text-white transition-all duration-300"
+              >
+                Contact Support
               </a>
             </div>
-          ))}
-        </div>
-
-        {/* Empty State */}
-        {filteredCategories.length === 0 && (
-          <div style={{ textAlign: 'center', background: 'white', borderRadius: '16px', padding: '4rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🔍</div>
-            <h3 style={{ fontSize: '1.5rem', fontWeight: '600', color: '#111827', marginBottom: '1rem' }}>
-              No categories found
-            </h3>
-            <p style={{ color: '#6b7280', marginBottom: '2rem' }}>
-              Try adjusting your search terms or filters to find what you're looking for.
-            </p>
-            <button
-              onClick={() => {
-                setSearchTerm('');
-                setSelectedFilter('all');
-              }}
-              style={{
-                padding: '0.75rem 1.5rem',
-                backgroundColor: '#22c55e',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontWeight: '600'
-              }}
-            >
-              Clear Filters
-            </button>
-          </div>
-        )}
-
-        {/* CTA Section */}
-        <div style={{ textAlign: 'center', background: 'white', borderRadius: '16px', padding: '3rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-          <h2 style={{ fontSize: '2.5rem', fontWeight: '700', color: '#111827', marginBottom: '1rem' }}>
-            Can't Find What You're Looking For?
-          </h2>
-          <p style={{ fontSize: '1.125rem', color: '#6b7280', marginBottom: '2rem', maxWidth: '600px', margin: '0 auto' }}>
-            Browse our complete product catalog or contact our support team for assistance.
-          </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <a href="/products" style={{
-              padding: '1rem 2rem',
-              backgroundColor: '#22c55e',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              fontSize: '1.125rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              textDecoration: 'none',
-              display: 'inline-block'
-            }}>
-              View All Products
-            </a>
-            <a href="/contact" style={{
-              padding: '1rem 2rem',
-              backgroundColor: 'transparent',
-              color: '#22c55e',
-              border: '2px solid #22c55e',
-              borderRadius: '12px',
-              fontSize: '1.125rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              textDecoration: 'none',
-              display: 'inline-block'
-            }}>
-              Contact Support
-            </a>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 } 

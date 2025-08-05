@@ -1,155 +1,269 @@
-"use client";
+'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { 
-  DevicePhoneMobileIcon,
-  ComputerDesktopIcon,
-  CameraIcon,
-  MusicalNoteIcon,
-  ClockIcon,
-  CpuChipIcon,
-  SpeakerWaveIcon,
-  DeviceTabletIcon
-} from '@heroicons/react/24/outline';
+import { ArrowRight, Sparkles } from 'lucide-react';
 
-const categories = [
-  {
-    id: 1,
-    name: 'Smartphones',
-    icon: DevicePhoneMobileIcon,
-    description: 'Latest mobile devices',
-    productCount: 156,
-    color: 'from-blue-500 to-blue-600'
-  },
-  {
-    id: 2,
-    name: 'Laptops',
-    icon: ComputerDesktopIcon,
-    description: 'High-performance computers',
-    productCount: 89,
-    color: 'from-purple-500 to-purple-600'
-  },
-  {
-    id: 3,
-    name: 'Cameras',
-    icon: CameraIcon,
-    description: 'Professional photography',
-    productCount: 234,
-    color: 'from-green-500 to-green-600'
-  },
-  {
-    id: 4,
-    name: 'Headphones',
-    icon: MusicalNoteIcon,
-    description: 'Premium audio experience',
-    productCount: 178,
-    color: 'from-red-500 to-red-600'
-  },
-  {
-    id: 5,
-    name: 'Smartwatches',
-    icon: ClockIcon,
-    description: 'Connected timepieces',
-    productCount: 92,
-    color: 'from-yellow-500 to-yellow-600'
-  },
-  {
-    id: 6,
-    name: 'Gaming',
-    icon: CpuChipIcon,
-    description: 'Gaming accessories',
-    productCount: 145,
-    color: 'from-pink-500 to-pink-600'
-  },
-  {
-    id: 7,
-    name: 'Speakers',
-    icon: SpeakerWaveIcon,
-    description: 'Home audio systems',
-    productCount: 67,
-    color: 'from-indigo-500 to-indigo-600'
-  },
-  {
-    id: 8,
-    name: 'Tablets',
-    icon: DeviceTabletIcon,
-    description: 'Portable computing',
-    productCount: 123,
-    color: 'from-orange-500 to-orange-600'
-  }
-];
+interface Category {
+  id?: string;
+  _id?: string;
+  name: string;
+  description: string;
+  image: string;
+  productCount: number;
+  subcategories: string[];
+}
 
-export function CategoriesSection() {
-  return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            Shop by{' '}
-            <span className="gradient-text">Category</span>
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Discover our curated collection of premium products across all categories
-          </p>
-        </motion.div>
+export default function CategoriesSection() {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
 
-        {/* Categories Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {categories.map((category, index) => (
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/categories');
+        if (!response.ok) {
+          throw new Error('Failed to fetch categories');
+        }
+        const data = await response.json();
+        setCategories(data || []);
+      } catch (error) {
+        setCategories([
+          {
+            id: "smartphones",
+            name: "Smartphones",
+            description: "Latest mobile devices and smartphones",
+            image: "📱",
+            productCount: 15,
+            subcategories: ["iPhone", "Android", "Accessories"]
+          },
+          {
+            id: "laptops",
+            name: "Laptops",
+            description: "Professional and gaming laptops",
+            image: "💻",
+            productCount: 12,
+            subcategories: ["MacBook", "Windows", "Gaming", "Business"]
+          },
+          {
+            id: "headphones",
+            name: "Headphones",
+            description: "Wireless and wired audio solutions",
+            image: "🎧",
+            productCount: 8,
+            subcategories: ["Wireless", "Noise Cancelling", "Gaming", "Studio"]
+          },
+          {
+            id: "smartwatches",
+            name: "Smartwatches",
+            description: "Fitness and health tracking devices",
+            image: "⌚",
+            productCount: 6,
+            subcategories: ["Apple Watch", "Fitness", "Luxury", "Sports"]
+          },
+          {
+            id: "cameras",
+            name: "Cameras",
+            description: "Professional and amateur photography equipment",
+            image: "📷",
+            productCount: 10,
+            subcategories: ["DSLR", "Mirrorless", "Action", "Lenses"]
+          },
+          {
+            id: "gaming",
+            name: "Gaming",
+            description: "Gaming consoles and accessories",
+            image: "🎮",
+            productCount: 7,
+            subcategories: ["Consoles", "Controllers", "VR", "PC Gaming"]
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  if (!loading && categories.length > 0) {
+    return (
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-20 right-10 w-72 h-72 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full opacity-5 blur-3xl"></div>
+          <div className="absolute bottom-20 left-10 w-96 h-96 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full opacity-5 blur-3xl"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          {/* Section Header */}
+          <div className="text-center mb-16">
             <motion.div
-              key={category.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              whileHover={{ y: -8, scale: 1.02 }}
-              className="group cursor-pointer"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full mb-6 shadow-lg"
             >
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 text-center shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700">
-                {/* Icon */}
-                <div className={`w-16 h-16 bg-gradient-to-br ${category.color} rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                  <category.icon className="w-8 h-8 text-white" />
-                </div>
+              <Sparkles className="w-5 h-5 mr-2" />
+              <span className="text-sm font-medium">Browse Categories</span>
+            </motion.div>
+            
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
+            >
+              Explore by
+              <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"> Category</span>
+            </motion.h2>
+            
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-xl text-gray-600 max-w-3xl mx-auto"
+            >
+              Discover our curated collection across all product categories
+            </motion.p>
+          </div>
 
-                {/* Content */}
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                  {category.name}
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                  {category.description}
-                </p>
-                <div className="text-xs text-primary-600 dark:text-primary-400 font-medium">
-                  {category.productCount} products
-                </div>
-              </div>
+          {/* Filter Buttons */}
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
+            {['All', 'Electronics', 'Fashion', 'Home', 'Sports', 'Books'].map((filter, index) => (
+              <motion.button
+                key={`filter-${filter}`}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4, delay: 0.1 + index * 0.1 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-5 py-3 bg-gradient-to-r from-purple-50 to-pink-50 backdrop-blur-sm text-purple-700 text-base font-medium rounded-full border border-purple-200/50 hover:from-purple-100 hover:to-pink-100 hover:border-purple-300/70 transition-all duration-300"
+              >
+                {filter}
+              </motion.button>
+            ))}
+          </div>
+
+          {/* Categories Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+            {categories.map((category, index) => (
+              <motion.div
+                key={category.id || category._id || `category-${index}`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
+                whileHover={{ y: -10, scale: 1.02 }}
+                className="group cursor-pointer"
+              >
+                <Link href={`/categories/${category.id || category._id || category.name.toLowerCase().replace(/\s+/g, '-')}`}>
+                  <div className="bg-white/90 backdrop-blur-sm border border-purple-200/50 rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 group-hover:bg-white/95 group-hover:border-purple-300/70 h-80 flex flex-col justify-between">
+                    <div>
+                      <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-4xl mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 overflow-hidden">
+                        {category.image && category.image.startsWith('http') ? (
+                          <img 
+                            src={category.image} 
+                            alt={category.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              const nextSibling = target.nextSibling as HTMLElement;
+                              if (nextSibling) {
+                                nextSibling.style.display = 'flex';
+                              }
+                            }}
+                          />
+                        ) : null}
+                        <span style={{ display: category.image && category.image.startsWith('http') ? 'none' : 'flex' }}>
+                          {category.image || '📦'}
+                        </span>
+                      </div>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-purple-600 transition-colors duration-300">
+                        {category.name}
+                      </h3>
+                      <p className="text-lg text-gray-600 mb-4 line-clamp-2">
+                        {category.description}
+                      </p>
+                    </div>
+                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 px-5 py-3 rounded-full text-purple-700 font-medium text-base">
+                      {category.productCount} Products
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* View All Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="text-center mt-12"
+          >
+            <Link href="/categories">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="btn-modern text-lg px-8 py-4 flex items-center space-x-2 mx-auto group"
+              >
+                <span>View All Categories</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+              </motion.button>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full mb-6"
+          >
+            <Sparkles className="w-5 h-5 mr-2" />
+            <span className="text-sm font-medium">Browse Categories</span>
+          </motion.div>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
+          >
+            Explore by
+            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"> Category</span>
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-xl text-gray-600 max-w-3xl mx-auto"
+          >
+            Discover our curated collection across all product categories
+          </motion.p>
+        </div>
+        
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+          {[...Array(6)].map((_, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 + i * 0.1 }}
+              className="category-card animate-pulse"
+            >
+              <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4"></div>
+              <div className="h-4 bg-gray-200 rounded mb-2"></div>
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
             </motion.div>
           ))}
         </div>
-
-        {/* View All Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="text-center mt-12"
-        >
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="btn-primary"
-          >
-            View All Categories
-          </motion.button>
-        </motion.div>
       </div>
     </section>
   );

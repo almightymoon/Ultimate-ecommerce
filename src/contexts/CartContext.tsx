@@ -140,20 +140,35 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Load cart from localStorage on mount
   useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      try {
-        const cartItems = JSON.parse(savedCart);
-        dispatch({ type: 'LOAD_CART', payload: cartItems });
-      } catch (error) {
-        console.error('Error loading cart from localStorage:', error);
+    const loadCart = () => {
+      const savedCart = localStorage.getItem('cart');
+      console.log('Loading cart from localStorage:', savedCart);
+      if (savedCart) {
+        try {
+          const cartItems = JSON.parse(savedCart);
+          console.log('Parsed cart items:', cartItems);
+          if (Array.isArray(cartItems) && cartItems.length > 0) {
+            dispatch({ type: 'LOAD_CART', payload: cartItems });
+          }
+        } catch (error) {
+          console.error('Error loading cart from localStorage:', error);
+          // Clear corrupted cart data
+          localStorage.removeItem('cart');
+        }
       }
-    }
+    };
+
+    // Load immediately
+    loadCart();
   }, []);
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(state.items));
+    if (state.items.length > 0) {
+      localStorage.setItem('cart', JSON.stringify(state.items));
+    } else {
+      localStorage.removeItem('cart');
+    }
   }, [state.items]);
 
   const addItem = (item: Omit<CartItem, 'quantity'>) => {

@@ -1,6 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+import Header from '@/components/Header';
+import { motion } from 'framer-motion';
+import { Mail, Phone, MapPin, Clock, Send, CheckCircle } from 'lucide-react';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -32,89 +35,64 @@ export default function ContactPage() {
   };
 
   return (
-    <div style={{ fontFamily: 'Inter, sans-serif', background: '#f8fafc', minHeight: '100vh' }}>
-      {/* Header */}
-      <header style={{
-        background: 'white',
-        borderBottom: '1px solid #e5e7eb',
-        padding: '1rem 0',
-        position: 'sticky',
-        top: 0,
-        zIndex: 100
-      }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{
-              width: '32px',
-              height: '32px',
-              background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginRight: '8px'
-            }}>
-              <span style={{ color: 'white', fontWeight: 'bold', fontSize: '18px' }}>U</span>
-            </div>
-            <span style={{ fontSize: '24px', fontWeight: 'bold', color: '#22c55e' }}>UltimateEcommerce</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <a href="/" style={{ padding: '8px 16px', color: '#374151', textDecoration: 'none' }}>← Back to Home</a>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <Header />
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-32">
         {/* Hero Section */}
-        <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-          <h1 style={{ fontSize: '3.5rem', fontWeight: '700', color: '#111827', marginBottom: '1rem' }}>
-            Get in <span style={{
-              background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}>Touch</span>
+        <motion.div 
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-6">
+            Get in Touch
           </h1>
-          <p style={{ fontSize: '1.25rem', color: '#6b7280', maxWidth: '600px', margin: '0 auto', lineHeight: '1.6' }}>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
           </p>
-        </div>
+        </motion.div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', marginBottom: '4rem' }}>
+        <div className="grid lg:grid-cols-2 gap-12 mb-16">
           {/* Contact Form */}
-          <div style={{ background: 'white', borderRadius: '16px', padding: '2rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-            <h2 style={{ fontSize: '2rem', fontWeight: '700', color: '#111827', marginBottom: '2rem' }}>
+          <motion.div 
+            className="bg-white border border-gray-200 rounded-3xl p-8 shadow-xl"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <h2 className="text-3xl font-bold text-gray-900 mb-8">
               Send us a Message
             </h2>
             
             {isSubmitted ? (
-              <div style={{ textAlign: 'center', padding: '2rem' }}>
-                <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>✅</div>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: '600', color: '#111827', marginBottom: '1rem' }}>
+              <motion.div 
+                className="text-center py-12"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <CheckCircle className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">
                   Message Sent Successfully!
                 </h3>
-                <p style={{ color: '#6b7280', marginBottom: '2rem' }}>
+                <p className="text-gray-600 mb-8">
                   Thank you for contacting us. We'll get back to you within 24 hours.
                 </p>
                 <button
                   onClick={() => setIsSubmitted(false)}
-                  style={{
-                    padding: '0.75rem 1.5rem',
-                    backgroundColor: '#22c55e',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    fontWeight: '600'
-                  }}
+                  className="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
                 >
                   Send Another Message
                 </button>
-              </div>
+              </motion.div>
             ) : (
-              <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#374151', fontWeight: '500' }}>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Name *
                   </label>
                   <input
@@ -123,18 +101,13 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '8px',
-                      fontSize: '1rem'
-                    }}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                    placeholder="Your full name"
                   />
                 </div>
 
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#374151', fontWeight: '500' }}>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Email *
                   </label>
                   <input
@@ -143,18 +116,13 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '8px',
-                      fontSize: '1rem'
-                    }}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                    placeholder="your.email@example.com"
                   />
                 </div>
 
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#374151', fontWeight: '500' }}>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Subject *
                   </label>
                   <select
@@ -162,26 +130,19 @@ export default function ContactPage() {
                     value={formData.subject}
                     onChange={handleInputChange}
                     required
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '8px',
-                      fontSize: '1rem',
-                      background: 'white'
-                    }}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 bg-white"
                   >
-                    <option value="">Select a subject</option>
-                    <option value="general">General Inquiry</option>
-                    <option value="support">Technical Support</option>
-                    <option value="billing">Billing Question</option>
-                    <option value="partnership">Partnership</option>
-                    <option value="feedback">Feedback</option>
+                    <option key="select" value="">Select a subject</option>
+                    <option key="general" value="general">General Inquiry</option>
+                    <option key="support" value="support">Technical Support</option>
+                    <option key="billing" value="billing">Billing Question</option>
+                    <option key="partnership" value="partnership">Partnership</option>
+                    <option key="feedback" value="feedback">Feedback</option>
                   </select>
                 </div>
 
-                <div style={{ marginBottom: '2rem' }}>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#374151', fontWeight: '500' }}>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Message *
                   </label>
                   <textarea
@@ -190,98 +151,73 @@ export default function ContactPage() {
                     onChange={handleInputChange}
                     required
                     rows={5}
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '8px',
-                      fontSize: '1rem',
-                      resize: 'vertical'
-                    }}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 resize-vertical"
+                    placeholder="Tell us how we can help you..."
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  style={{
-                    width: '100%',
-                    padding: '1rem',
-                    backgroundColor: isSubmitting ? '#9ca3af' : '#22c55e',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '12px',
-                    fontSize: '1.125rem',
-                    fontWeight: '600',
-                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                    transition: 'all 0.2s ease'
-                  }}
+                  className={`w-full py-4 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center justify-center gap-2 ${
+                    isSubmitting 
+                      ? 'bg-gray-400 text-white cursor-not-allowed' 
+                      : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 hover:shadow-lg'
+                  }`}
                 >
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5" />
+                      Send Message
+                    </>
+                  )}
                 </button>
               </form>
             )}
-          </div>
+          </motion.div>
 
           {/* Contact Information */}
-          <div>
-            <div style={{ background: 'white', borderRadius: '16px', padding: '2rem', marginBottom: '2rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: '600', color: '#111827', marginBottom: '1.5rem' }}>
+          <motion.div 
+            className="space-y-6"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <div className="bg-white border border-gray-200 rounded-3xl p-8 shadow-xl">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">
                 Contact Information
               </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <div style={{
-                    width: '48px',
-                    height: '48px',
-                    background: '#dcfce7',
-                    borderRadius: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '1.5rem'
-                  }}>
-                    📧
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                    <Mail className="w-6 h-6 text-purple-600" />
                   </div>
                   <div>
-                    <div style={{ fontWeight: '600', color: '#111827' }}>Email</div>
-                    <div style={{ color: '#6b7280' }}>support@ultimateecommerce.com</div>
+                    <div className="font-semibold text-gray-900">Email</div>
+                    <div className="text-gray-600">support@ultimateecommerce.com</div>
                   </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <div style={{
-                    width: '48px',
-                    height: '48px',
-                    background: '#dcfce7',
-                    borderRadius: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '1.5rem'
-                  }}>
-                    📞
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                    <Phone className="w-6 h-6 text-purple-600" />
                   </div>
                   <div>
-                    <div style={{ fontWeight: '600', color: '#111827' }}>Phone</div>
-                    <div style={{ color: '#6b7280' }}>+1 (555) 123-4567</div>
+                    <div className="font-semibold text-gray-900">Phone</div>
+                    <div className="text-gray-600">+1 (555) 123-4567</div>
                   </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <div style={{
-                    width: '48px',
-                    height: '48px',
-                    background: '#dcfce7',
-                    borderRadius: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '1.5rem'
-                  }}>
-                    📍
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                    <MapPin className="w-6 h-6 text-purple-600" />
                   </div>
                   <div>
-                    <div style={{ fontWeight: '600', color: '#111827' }}>Address</div>
-                    <div style={{ color: '#6b7280' }}>
+                    <div className="font-semibold text-gray-900">Address</div>
+                    <div className="text-gray-600">
                       123 Innovation Drive<br />
                       Tech Valley, CA 94000<br />
                       United States
@@ -291,54 +227,61 @@ export default function ContactPage() {
               </div>
             </div>
 
-            <div style={{ background: 'white', borderRadius: '16px', padding: '2rem', marginBottom: '2rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: '600', color: '#111827', marginBottom: '1.5rem' }}>
+            <div className="bg-white border border-gray-200 rounded-3xl p-8 shadow-xl">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">
                 Business Hours
               </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: '#6b7280' }}>Monday - Friday</span>
-                  <span style={{ fontWeight: '500', color: '#111827' }}>9:00 AM - 6:00 PM</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: '#6b7280' }}>Saturday</span>
-                  <span style={{ fontWeight: '500', color: '#111827' }}>10:00 AM - 4:00 PM</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: '#6b7280' }}>Sunday</span>
-                  <span style={{ fontWeight: '500', color: '#111827' }}>Closed</span>
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                    <Clock className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Monday - Friday</span>
+                      <span className="font-semibold text-gray-900">9:00 AM - 6:00 PM</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Saturday</span>
+                      <span className="font-semibold text-gray-900">10:00 AM - 4:00 PM</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Sunday</span>
+                      <span className="font-semibold text-gray-900">Closed</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div style={{ background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', borderRadius: '16px', padding: '2rem', color: 'white' }}>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1rem' }}>
+            <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl p-8 text-white shadow-xl">
+              <h3 className="text-2xl font-bold mb-4">
                 Need Immediate Help?
               </h3>
-              <p style={{ marginBottom: '1.5rem', opacity: 0.9 }}>
+              <p className="mb-6 opacity-90">
                 Check out our comprehensive FAQ section for quick answers to common questions.
               </p>
-              <a href="/faq" style={{
-                display: 'inline-block',
-                padding: '0.75rem 1.5rem',
-                backgroundColor: 'white',
-                color: '#22c55e',
-                textDecoration: 'none',
-                borderRadius: '8px',
-                fontWeight: '600'
-              }}>
+              <a 
+                href="/faq" 
+                className="inline-block px-6 py-3 bg-white text-purple-600 font-semibold rounded-xl hover:bg-gray-100 transition-colors duration-300"
+              >
                 View FAQ
               </a>
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* FAQ Section */}
-        <div style={{ background: 'white', borderRadius: '16px', padding: '3rem', marginBottom: '3rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-          <h2 style={{ fontSize: '2.5rem', fontWeight: '700', color: '#111827', textAlign: 'center', marginBottom: '3rem' }}>
+        <motion.div 
+          className="bg-white border border-gray-200 rounded-3xl p-12 shadow-xl mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+        >
+          <h2 className="text-4xl font-bold text-gray-900 text-center mb-12">
             Frequently Asked Questions
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem' }}>
+          <div className="grid md:grid-cols-2 gap-8">
             {[
               {
                 question: 'How do I track my order?',
@@ -365,57 +308,53 @@ export default function ContactPage() {
                 answer: 'Absolutely! We use industry-standard SSL encryption and never store your payment information on our servers.'
               }
             ].map((faq, index) => (
-              <div key={index} style={{ padding: '1.5rem', border: '1px solid #e5e7eb', borderRadius: '12px' }}>
-                <h4 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#111827', marginBottom: '0.75rem' }}>
+              <motion.div 
+                key={index} 
+                className="p-6 border border-gray-200 rounded-2xl hover:shadow-lg transition-all duration-300"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                whileHover={{ y: -4 }}
+              >
+                <h4 className="text-lg font-semibold text-gray-900 mb-3">
                   {faq.question}
                 </h4>
-                <p style={{ color: '#6b7280', lineHeight: '1.6' }}>
+                <p className="text-gray-600 leading-relaxed">
                   {faq.answer}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* CTA Section */}
-        <div style={{ textAlign: 'center', background: 'white', borderRadius: '16px', padding: '3rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-          <h2 style={{ fontSize: '2.5rem', fontWeight: '700', color: '#111827', marginBottom: '1rem' }}>
+        <motion.div 
+          className="text-center bg-white border border-gray-200 rounded-3xl p-12 shadow-xl"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+        >
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Still Have Questions?
           </h2>
-          <p style={{ fontSize: '1.125rem', color: '#6b7280', marginBottom: '2rem', maxWidth: '600px', margin: '0 auto' }}>
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Our customer support team is here to help you with any questions or concerns you may have.
           </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <a href="/products" style={{
-              padding: '1rem 2rem',
-              backgroundColor: '#22c55e',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              fontSize: '1.125rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              textDecoration: 'none',
-              display: 'inline-block'
-            }}>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a 
+              href="/products" 
+              className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
+            >
               Start Shopping
             </a>
-            <a href="/about" style={{
-              padding: '1rem 2rem',
-              backgroundColor: 'transparent',
-              color: '#22c55e',
-              border: '2px solid #22c55e',
-              borderRadius: '12px',
-              fontSize: '1.125rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              textDecoration: 'none',
-              display: 'inline-block'
-            }}>
+            <a 
+              href="/about" 
+              className="px-8 py-4 border-2 border-purple-600 text-purple-600 font-semibold rounded-xl hover:bg-purple-600 hover:text-white transition-all duration-300"
+            >
               Learn More About Us
             </a>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
-import { getProductsCollection } from '@/utils/mongodb';
+import { getCollection } from '@/lib/database';
 
 export async function GET(request, { params }) {
   try {
-    const { id } = params;
-    const collection = await getProductsCollection();
+    const resolvedParams = await params;
+    const { id } = resolvedParams;
+    const collection = await getCollection('products');
     
     const product = await collection.findOne({ id });
     

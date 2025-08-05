@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { EnvelopeIcon, CheckCircleIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import { Mail, CheckCircle, Sparkles, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const benefits = [
@@ -13,7 +13,7 @@ const benefits = [
   'Free shipping on your first order'
 ];
 
-export function NewsletterSection() {
+export default function NewsletterSection() {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
@@ -49,27 +49,29 @@ export function NewsletterSection() {
 
   if (isSubscribed) {
     return (
-      <section className="py-20 bg-gradient-to-br from-primary-500 to-primary-600">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section className="py-20 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 relative overflow-hidden">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
-            className="bg-white rounded-2xl p-8 shadow-xl"
+            className="card-modern"
           >
-            <CheckCircleIcon className="w-16 h-16 text-primary-500 mx-auto mb-6" />
+            <CheckCircle className="w-16 h-16 text-purple-500 mx-auto mb-6" />
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Welcome to the Family!
             </h2>
             <p className="text-xl text-gray-600 mb-6">
               Thank you for subscribing to our newsletter. You'll be the first to know about our latest products and exclusive offers.
             </p>
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => setIsSubscribed(false)}
-              className="btn-outline"
+              className="btn-modern"
             >
               Subscribe Another Email
-            </button>
+            </motion.button>
           </motion.div>
         </div>
       </section>
@@ -77,10 +79,12 @@ export function NewsletterSection() {
   }
 
   return (
-    <section className="py-20 bg-gradient-to-br from-primary-500 to-primary-600 relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(255,255,255,0.1)_0%,transparent_50%),radial-gradient(circle_at_75%_75%,rgba(255,255,255,0.1)_0%,transparent_50%)]" />
+    <section className="py-20 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-orange-500/20"></div>
+        <div className="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-10 right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
       </div>
 
       {/* Floating Elements */}
@@ -97,7 +101,7 @@ export function NewsletterSection() {
           }}
           className="absolute top-20 left-10"
         >
-          <SparklesIcon className="w-8 h-8 text-white/30" />
+          <Sparkles className="w-8 h-8 text-white/30" />
         </motion.div>
         <motion.div
           animate={{ 
@@ -107,12 +111,11 @@ export function NewsletterSection() {
           transition={{ 
             duration: 8, 
             repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2
+            ease: "easeInOut"
           }}
-          className="absolute bottom-20 right-10"
+          className="absolute top-40 right-20"
         >
-          <SparklesIcon className="w-6 h-6 text-white/30" />
+          <Sparkles className="w-6 h-6 text-white/20" />
         </motion.div>
         <motion.div
           animate={{ 
@@ -122,156 +125,124 @@ export function NewsletterSection() {
           transition={{ 
             duration: 7, 
             repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1
+            ease: "easeInOut"
           }}
-          className="absolute top-1/2 left-1/4"
+          className="absolute bottom-20 left-20"
         >
-          <SparklesIcon className="w-4 h-4 text-white/20" />
+          <Sparkles className="w-10 h-10 text-white/25" />
         </motion.div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Content */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-white"
-          >
-            <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium mb-6">
-              <EnvelopeIcon className="w-4 h-4 mr-2" />
-              Stay Updated
-            </div>
-
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-              Never Miss a{' '}
-              <span className="text-yellow-300">Deal</span>
-            </h2>
-
-            <p className="text-xl text-white/90 mb-8 leading-relaxed">
-              Subscribe to our newsletter and be the first to know about exclusive offers, 
-              new product launches, and insider tips from our tech experts.
-            </p>
-
-            {/* Benefits */}
-            <div className="space-y-3">
-              {benefits.map((benefit, index) => (
-                <motion.div
-                  key={benefit}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="flex items-center"
-                >
-                  <CheckCircleIcon className="w-5 h-5 text-yellow-300 mr-3 flex-shrink-0" />
-                  <span className="text-white/90">{benefit}</span>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Newsletter Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="bg-white rounded-2xl p-8 shadow-xl"
-          >
-            <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                Join Our Newsletter
-              </h3>
-              <p className="text-gray-600">
-                Get exclusive access to our best deals and latest products
-              </p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address
-                </label>
-                <div className="relative">
-                  <EnvelopeIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type="email"
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email address"
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
-                    disabled={isSubmitting}
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-primary-500 text-white py-3 px-6 rounded-lg font-medium hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Subscribing...
-                  </>
-                ) : (
-                  <>
-                    <EnvelopeIcon className="w-5 h-5" />
-                    Subscribe Now
-                  </>
-                )}
-              </button>
-            </form>
-
-            <p className="text-xs text-gray-500 text-center mt-4">
-              By subscribing, you agree to our{' '}
-              <a href="/privacy" className="text-primary-600 hover:underline">
-                Privacy Policy
-              </a>
-              {' '}and{' '}
-              <a href="/terms" className="text-primary-600 hover:underline">
-                Terms of Service
-              </a>
-            </p>
-          </motion.div>
-        </div>
-
-        {/* Social Proof */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-center mt-16"
+          transition={{ duration: 0.8 }}
+          className="mb-12"
         >
-          <p className="text-white/80 text-sm mb-4">
-            Join over 50,000+ satisfied subscribers
+          <motion.div
+            initial={{ scale: 0 }}
+            whileInView={{ scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-white mb-8"
+          >
+            <Mail className="w-5 h-5 mr-2" />
+            <span className="text-sm font-medium">Stay Updated</span>
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="text-4xl md:text-6xl font-bold text-white mb-6"
+          >
+            Never Miss a
+            <span className="bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent"> Deal</span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="text-xl text-white/90 max-w-2xl mx-auto"
+          >
+            Subscribe to our newsletter and be the first to know about exclusive offers, new products, and insider deals.
+          </motion.p>
+        </motion.div>
+
+        {/* Benefits */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-12"
+        >
+          {benefits.map((benefit, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.6 + index * 0.1 }}
+              className="flex items-center space-x-3 text-white/90"
+            >
+              <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
+              <span className="text-sm">{benefit}</span>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Newsletter Form */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.7 }}
+          className="form-modern max-w-md mx-auto"
+        >
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="relative">
+              <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="email"
+                placeholder="Enter your email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="input-modern pl-12 pr-4"
+                disabled={isSubmitting}
+              />
+            </div>
+            
+            <motion.button
+              type="submit"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              disabled={isSubmitting}
+              className="btn-modern w-full flex items-center justify-center space-x-2 group"
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="loading-spinner w-5 h-5"></div>
+                  <span>Subscribing...</span>
+                </>
+              ) : (
+                <>
+                  <span>Subscribe Now</span>
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+                </>
+              )}
+            </motion.button>
+          </form>
+          
+          <p className="text-xs text-white/70 mt-4">
+            By subscribing, you agree to our Privacy Policy and Terms of Service.
           </p>
-          <div className="flex justify-center items-center space-x-8">
-            {[
-              { label: 'No Spam', icon: '🛡️' },
-              { label: 'Unsubscribe Anytime', icon: '📧' },
-              { label: 'Secure & Private', icon: '🔒' }
-            ].map((item, index) => (
-              <motion.div
-                key={item.label}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
-                className="flex items-center text-white/80"
-              >
-                <span className="text-lg mr-2">{item.icon}</span>
-                <span className="text-sm">{item.label}</span>
-              </motion.div>
-            ))}
-          </div>
         </motion.div>
       </div>
     </section>

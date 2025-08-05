@@ -1,33 +1,33 @@
-"use client";
+'use client';
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { StarIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/solid';
+import { Star, MessageCircle, Quote } from 'lucide-react';
 
 const testimonials = [
   {
     id: 1,
     name: 'Sarah Johnson',
     role: 'Tech Enthusiast',
-    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
+    avatar: '👩‍💻',
     rating: 5,
-    content: 'The 3D product visualization is absolutely incredible! I can see every detail before making a purchase. The AI recommendations are spot-on too.',
+    content: 'The shopping experience is absolutely incredible! The product quality and customer service exceeded all my expectations.',
     verified: true
   },
   {
     id: 2,
     name: 'Michael Chen',
     role: 'Professional Photographer',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+    avatar: '📸',
     rating: 5,
-    content: 'As a photographer, I need to see products in detail. This platform delivers exactly what I need with stunning visuals and accurate descriptions.',
+    content: 'As a professional, I need reliable equipment. This platform delivers exactly what I need with stunning quality and fast delivery.',
     verified: true
   },
   {
     id: 3,
     name: 'Emily Rodriguez',
     role: 'Digital Creator',
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+    avatar: '🎨',
     rating: 5,
     content: 'The shopping experience is seamless and the customer service is outstanding. I love how easy it is to find exactly what I\'m looking for.',
     verified: true
@@ -36,7 +36,7 @@ const testimonials = [
     id: 4,
     name: 'David Thompson',
     role: 'Gaming Streamer',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+    avatar: '🎮',
     rating: 5,
     content: 'The gaming section is amazing! I can see all the specs and compare products easily. The delivery was faster than expected.',
     verified: true
@@ -45,7 +45,7 @@ const testimonials = [
     id: 5,
     name: 'Lisa Wang',
     role: 'Fashion Blogger',
-    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
+    avatar: '👗',
     rating: 5,
     content: 'The mobile experience is perfect for on-the-go shopping. The wishlist feature and notifications keep me updated on my favorite items.',
     verified: true
@@ -54,7 +54,7 @@ const testimonials = [
     id: 6,
     name: 'James Wilson',
     role: 'Software Developer',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
+    avatar: '💻',
     rating: 5,
     content: 'The technical specifications are detailed and accurate. The comparison tools help me make informed decisions for my development setup.',
     verified: true
@@ -62,153 +62,138 @@ const testimonials = [
 ];
 
 const stats = [
-  { label: 'Happy Customers', value: '50K+' },
-  { label: 'Products Sold', value: '1M+' },
-  { label: 'Average Rating', value: '4.9/5' },
-  { label: 'Countries Served', value: '150+' }
+  { label: 'Happy Customers', value: '50K+', icon: '😊' },
+  { label: 'Products Sold', value: '1M+', icon: '📦' },
+  { label: 'Average Rating', value: '4.9/5', icon: '⭐' },
+  { label: 'Countries Served', value: '150+', icon: '🌍' }
 ];
 
-function TestimonialCard({ testimonial }: { testimonial: typeof testimonials[0] }) {
+export default function TestimonialsSection() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
-      className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700"
-    >
-      {/* Quote Icon */}
-      <div className="mb-4">
-        <ChatBubbleLeftRightIcon className="w-8 h-8 text-primary-400" />
+    <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full opacity-10 blur-3xl"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full opacity-10 blur-3xl"></div>
       </div>
 
-      {/* Rating */}
-      <div className="flex items-center mb-4">
-        {[...Array(5)].map((_, i) => (
-          <StarIcon
-            key={i}
-            className={`w-5 h-5 ${
-              i < testimonial.rating
-                ? 'text-yellow-400'
-                : 'text-gray-300 dark:text-gray-600'
-            }`}
-          />
-        ))}
-      </div>
-
-      {/* Content */}
-      <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-        "{testimonial.content}"
-      </p>
-
-      {/* Author */}
-      <div className="flex items-center">
-        <img
-          src={testimonial.avatar}
-          alt={testimonial.name}
-          className="w-12 h-12 rounded-full mr-4"
-        />
-        <div>
-          <div className="flex items-center gap-2">
-            <h4 className="font-semibold text-gray-900 dark:text-white">
-              {testimonial.name}
-            </h4>
-            {testimonial.verified && (
-              <span className="text-primary-600 dark:text-primary-400">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-              </span>
-            )}
-          </div>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            {testimonial.role}
-          </p>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-export function TestimonialsSection() {
-  return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            What Our{' '}
-            <span className="gradient-text">Customers</span>
-            {' '}Say
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+        <div className="text-center mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full mb-6 shadow-lg"
+          >
+            <MessageCircle className="w-5 h-5 mr-2" />
+            <span className="text-sm font-medium">Customer Stories</span>
+          </motion.div>
+          
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
+          >
+            What Our
+            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"> Customers</span>
+            <br />
+            Say
+          </motion.h2>
+          
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-xl text-gray-600 max-w-3xl mx-auto"
+          >
             Don't just take our word for it. Here's what our satisfied customers have to say about their shopping experience.
-          </p>
-        </motion.div>
+          </motion.p>
+        </div>
 
         {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16"
-        >
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
           {stats.map((stat, index) => (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
-              className="text-center"
+              transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
+              whileHover={{ scale: 1.05 }}
+              className="bg-white border border-gray-200 rounded-2xl p-6 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
             >
-              <div className="text-3xl md:text-4xl font-bold text-primary-600 dark:text-primary-400 mb-2">
+              <div className="text-3xl mb-2">{stat.icon}</div>
+              <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
                 {stat.value}
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-                {stat.label}
-              </div>
+              <div className="text-sm text-gray-600">{stat.label}</div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
 
-        {/* Testimonials Grid */}
+        {/* Testimonials */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
-            <TestimonialCard key={testimonial.id} testimonial={testimonial} />
+            <motion.div
+              key={testimonial.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
+              whileHover={{ y: -10, scale: 1.02 }}
+              className="bg-white border border-gray-200 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            >
+              <div className="mb-4">
+                <Quote className="w-8 h-8 text-purple-500" />
+              </div>
+              
+              <div className="flex items-center mb-4">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star
+                    key={i}
+                    className="w-5 h-5 text-yellow-400 fill-current"
+                  />
+                ))}
+              </div>
+              
+              <p className="text-gray-700 mb-6 leading-relaxed">
+                "{testimonial.content}"
+              </p>
+
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-xl mr-4">
+                  {testimonial.avatar}
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
+                  <p className="text-sm text-gray-600">{testimonial.role}</p>
+                  {testimonial.verified && (
+                    <div className="flex items-center mt-1">
+                      <span className="text-xs text-purple-600 font-medium">✓ Verified Customer</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
           ))}
         </div>
 
         {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.5 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
           className="text-center mt-16"
         >
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-              Join Our Happy Customers
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
-              Experience the future of online shopping with our cutting-edge platform. 
-              Start your journey today and discover why thousands of customers choose us.
-            </p>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="btn-primary"
-            >
-              Start Shopping Now
-            </motion.button>
+          <div className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <span>Join Our Happy Customers</span>
+            <span className="ml-2 text-xl">→</span>
           </div>
         </motion.div>
       </div>

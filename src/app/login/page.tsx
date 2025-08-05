@@ -1,40 +1,39 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight, CheckCircle, AlertCircle, Github, Twitter } from 'lucide-react';
+import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
+  const { login } = useAuth();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    rememberMe: false
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value
-    });
-    
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: ''
-      });
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
   const validateForm = () => {
-    const newErrors: {[key: string]: string} = {};
+    const newErrors: Record<string, string> = {};
 
     if (!formData.email) {
       newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email';
     }
 
     if (!formData.password) {
@@ -50,273 +49,220 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
-    setIsSubmitting(true);
+    setIsLoading(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Simulate successful login
-    console.log('Login successful:', formData);
-    setIsSubmitting(false);
-    
-    // Redirect to home page (in real app, you'd redirect to dashboard or previous page)
-    window.location.href = '/';
+    try {
+      await login(formData.email, formData.password);
+      router.push('/');
+    } catch (error) {
+      console.error('Login failed:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleSocialLogin = (provider: string) => {
-    console.log(`Logging in with ${provider}`);
-    // In a real app, you'd implement OAuth flow here
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5 }
+    }
   };
 
   return (
-    <div style={{ fontFamily: 'Inter, sans-serif', background: '#f8fafc', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      {/* Header */}
-      <header style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        background: 'white',
-        borderBottom: '1px solid #e5e7eb',
-        padding: '1rem 0',
-        zIndex: 100
-      }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{
-              width: '32px',
-              height: '32px',
-              background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginRight: '8px'
-            }}>
-              <span style={{ color: 'white', fontWeight: 'bold', fontSize: '18px' }}>U</span>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4 pt-32">
+      <div className="w-full max-w-md">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100"
+        >
+          {/* Header */}
+          <motion.div variants={itemVariants} className="text-center mb-8">
+            <Link href="/" className="inline-block mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-lg mx-auto">
+                U
+              </div>
+            </Link>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome back</h1>
+            <p className="text-gray-600">Sign in to your Ultimate account</p>
+          </motion.div>
+
+          {/* Social Login Buttons */}
+          <motion.div variants={itemVariants} className="space-y-3 mb-8">
+            <button className="w-full bg-white border-2 border-gray-200 text-gray-700 font-semibold py-3 px-4 rounded-xl hover:border-purple-500 hover:text-purple-600 transition-all duration-300 flex items-center justify-center gap-3 shadow-sm hover:shadow-md">
+              <Github className="w-5 h-5" />
+              Continue with GitHub
+            </button>
+            <button className="w-full bg-white border-2 border-gray-200 text-gray-700 font-semibold py-3 px-4 rounded-xl hover:border-purple-500 hover:text-purple-600 transition-all duration-300 flex items-center justify-center gap-3 shadow-sm hover:shadow-md">
+              <Twitter className="w-5 h-5" />
+              Continue with Twitter
+            </button>
+          </motion.div>
+
+          {/* Divider */}
+          <motion.div variants={itemVariants} className="relative mb-8">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200"></div>
             </div>
-            <span style={{ fontSize: '24px', fontWeight: 'bold', color: '#22c55e' }}>UltimateEcommerce</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <a href="/" style={{ padding: '8px 16px', color: '#374151', textDecoration: 'none' }}>← Back to Home</a>
-          </div>
-        </div>
-      </header>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-white text-gray-500">Or continue with email</span>
+            </div>
+          </motion.div>
 
-      <div style={{ width: '100%', maxWidth: '400px', padding: '2rem' }}>
-        {/* Login Form */}
-        <div style={{ background: 'white', borderRadius: '16px', padding: '2rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-            <h1 style={{ fontSize: '2rem', fontWeight: '700', color: '#111827', marginBottom: '0.5rem' }}>
-              Welcome Back
-            </h1>
-            <p style={{ color: '#6b7280', fontSize: '1rem' }}>
-              Sign in to your account to continue shopping
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit}>
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#374151', fontWeight: '500' }}>
-                Email Address
+          {/* Login Form */}
+          <motion.form variants={itemVariants} onSubmit={handleSubmit} className="space-y-6">
+            {/* Email Field */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                Email address
               </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder="Enter your email"
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: errors.email ? '1px solid #ef4444' : '1px solid #d1d5db',
-                  borderRadius: '8px',
-                  fontSize: '1rem',
-                  boxSizing: 'border-box'
-                }}
-              />
-              {errors.email && (
-                <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-                  {errors.email}
-                </p>
-              )}
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300 text-gray-900 placeholder-gray-500 ${
+                    errors.email 
+                      ? 'border-red-300 focus:border-red-500' 
+                      : 'border-gray-200 focus:border-purple-500'
+                  }`}
+                  placeholder="Enter your email"
+                />
+                {errors.email && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-center gap-1 mt-2 text-red-600 text-sm"
+                  >
+                    <AlertCircle className="w-4 h-4" />
+                    {errors.email}
+                  </motion.div>
+                )}
+              </div>
             </div>
 
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#374151', fontWeight: '500' }}>
+            {/* Password Field */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
                 Password
               </label>
-              <div style={{ position: 'relative' }}>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type={showPassword ? 'text' : 'password'}
+                  id="password"
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
+                  className={`w-full pl-10 pr-12 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300 text-gray-900 placeholder-gray-500 ${
+                    errors.password 
+                      ? 'border-red-300 focus:border-red-500' 
+                      : 'border-gray-200 focus:border-purple-500'
+                  }`}
                   placeholder="Enter your password"
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    paddingRight: '3rem',
-                    border: errors.password ? '1px solid #ef4444' : '1px solid #d1d5db',
-                    borderRadius: '8px',
-                    fontSize: '1rem',
-                    boxSizing: 'border-box'
-                  }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  style={{
-                    position: 'absolute',
-                    right: '0.75rem',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    color: '#6b7280',
-                    fontSize: '1rem'
-                  }}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
                 >
-                  {showPassword ? '🙈' : '👁️'}
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
+                {errors.password && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-center gap-1 mt-2 text-red-600 text-sm"
+                  >
+                    <AlertCircle className="w-4 h-4" />
+                    {errors.password}
+                  </motion.div>
+                )}
               </div>
-              {errors.password && (
-                <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-                  {errors.password}
-                </p>
-              )}
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+            {/* Remember Me & Forgot Password */}
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
-                  name="rememberMe"
-                  checked={formData.rememberMe}
-                  onChange={handleInputChange}
-                  style={{ width: '16px', height: '16px' }}
+                  className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
                 />
-                <span style={{ fontSize: '0.875rem', color: '#374151' }}>Remember me</span>
+                <span className="text-sm text-gray-600">Remember me</span>
               </label>
-              <a href="/forgot-password" style={{
-                fontSize: '0.875rem',
-                color: '#22c55e',
-                textDecoration: 'none',
-                fontWeight: '500'
-              }}>
+              <Link
+                href="/forgot-password"
+                className="text-sm text-purple-600 hover:text-purple-700 font-medium transition-colors duration-200"
+              >
                 Forgot password?
-              </a>
+              </Link>
             </div>
 
-            <button
+            {/* Submit Button */}
+            <motion.button
               type="submit"
-              disabled={isSubmitting}
-              style={{
-                width: '100%',
-                padding: '1rem',
-                backgroundColor: isSubmitting ? '#9ca3af' : '#22c55e',
-                color: 'white',
-                border: 'none',
-                borderRadius: '12px',
-                fontSize: '1.125rem',
-                fontWeight: '600',
-                cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                transition: 'all 0.2s ease',
-                marginBottom: '1.5rem'
-              }}
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-4 px-6 rounded-xl hover:from-purple-600 hover:to-pink-600 transform hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              {isSubmitting ? 'Signing In...' : 'Sign In'}
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1.5rem' }}>
-            <div style={{ flex: 1, height: '1px', background: '#e5e7eb' }}></div>
-            <span style={{ padding: '0 1rem', color: '#6b7280', fontSize: '0.875rem' }}>or continue with</span>
-            <div style={{ flex: 1, height: '1px', background: '#e5e7eb' }}></div>
-          </div>
-
-          {/* Social Login Buttons */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
-            <button
-              onClick={() => handleSocialLogin('google')}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.5rem',
-                padding: '0.75rem',
-                backgroundColor: 'white',
-                border: '1px solid #d1d5db',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-                fontWeight: '500',
-                transition: 'all 0.2s ease'
-              }} onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#f9fafb';
-              }} onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'white';
-              }}
-            >
-              <span style={{ fontSize: '1.25rem' }}>🔍</span>
-              Google
-            </button>
-            <button
-              onClick={() => handleSocialLogin('facebook')}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.5rem',
-                padding: '0.75rem',
-                backgroundColor: 'white',
-                border: '1px solid #d1d5db',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-                fontWeight: '500',
-                transition: 'all 0.2s ease'
-              }} onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#f9fafb';
-              }} onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'white';
-              }}
-            >
-              <span style={{ fontSize: '1.25rem' }}>📘</span>
-              Facebook
-            </button>
-          </div>
+              {isLoading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Signing in...
+                </>
+              ) : (
+                <>
+                  Sign in
+                  <ArrowRight className="w-5 h-5" />
+                </>
+              )}
+            </motion.button>
+          </motion.form>
 
           {/* Sign Up Link */}
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+          <motion.div variants={itemVariants} className="text-center mt-8 pt-6 border-t border-gray-100">
+            <p className="text-gray-600">
               Don't have an account?{' '}
-              <a href="/signup" style={{
-                color: '#22c55e',
-                textDecoration: 'none',
-                fontWeight: '600'
-              }}>
-                Sign up here
-              </a>
+              <Link
+                href="/signup"
+                className="text-purple-600 hover:text-purple-700 font-semibold transition-colors duration-200"
+              >
+                Sign up for free
+              </Link>
             </p>
-          </div>
-        </div>
+          </motion.div>
 
-        {/* Additional Info */}
-        <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-          <p style={{ color: '#6b7280', fontSize: '0.875rem', lineHeight: '1.5' }}>
-            By signing in, you agree to our{' '}
-            <a href="/terms" style={{ color: '#22c55e', textDecoration: 'none' }}>Terms of Service</a>
-            {' '}and{' '}
-            <a href="/privacy" style={{ color: '#22c55e', textDecoration: 'none' }}>Privacy Policy</a>
-          </p>
-        </div>
+          {/* Trust Indicators */}
+          <motion.div variants={itemVariants} className="mt-8 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-100">
+            <div className="flex items-center gap-3">
+              <CheckCircle className="w-5 h-5 text-purple-600" />
+              <div>
+                <p className="text-sm font-semibold text-purple-800">Secure & Private</p>
+                <p className="text-xs text-purple-600">Your data is protected with bank-level security</p>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   );

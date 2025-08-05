@@ -3,7 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
+import { useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
+import LoadingSpinner from '@/components/LoadingSpinner';
+import { Search, Filter, Grid, List, Heart, ShoppingCart, Eye, Star, ArrowRight, Clock, TrendingUp } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface Deal {
   id: string;
@@ -24,142 +28,55 @@ interface Deal {
 export default function DealsPage() {
   const { addItem } = useCart();
   const { addItem: addToWishlist, isInWishlist, removeItem: removeFromWishlist } = useWishlist();
+  const searchParams = useSearchParams();
+  
   const [deals, setDeals] = useState<Deal[]>([]);
   const [filteredDeals, setFilteredDeals] = useState<Deal[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
-  const [isLoading, setIsLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [loading, setLoading] = useState(true);
 
-  // Simulate deals data loading
+  // Fetch deals data
   useEffect(() => {
-    setTimeout(() => {
-      const mockDeals: Deal[] = [
-        {
-          id: '1',
-          name: 'iPhone 15 Pro Max - 256GB',
-          originalPrice: 1299.99,
-          salePrice: 999.99,
-          discount: 23,
-          image: '📱',
-          category: 'Smartphones',
-          endTime: '2024-12-31T23:59:59',
-          stock: 15,
-          sold: 85,
-          badge: 'Flash Sale',
-          description: 'Latest iPhone with A17 Pro chip and titanium design',
-          featured: true
-        },
-        {
-          id: '2',
-          name: 'MacBook Pro 16" M3 Pro',
-          originalPrice: 2499.99,
-          salePrice: 1999.99,
-          discount: 20,
-          image: '💻',
-          category: 'Laptops',
-          endTime: '2024-12-25T23:59:59',
-          stock: 8,
-          sold: 42,
-          badge: 'Limited Time',
-          description: 'Powerful laptop for professionals and creators',
-          featured: true
-        },
-        {
-          id: '3',
-          name: 'Sony WH-1000XM5 Headphones',
-          originalPrice: 399.99,
-          salePrice: 299.99,
-          discount: 25,
-          image: '🎧',
-          category: 'Headphones',
-          endTime: '2024-12-28T23:59:59',
-          stock: 25,
-          sold: 75,
-          badge: 'Best Seller',
-          description: 'Industry-leading noise cancellation technology',
-          featured: true
-        },
-        {
-          id: '4',
-          name: 'Samsung Galaxy S24 Ultra',
-          originalPrice: 1299.99,
-          salePrice: 1099.99,
-          discount: 15,
-          image: '📱',
-          category: 'Smartphones',
-          endTime: '2024-12-30T23:59:59',
-          stock: 12,
-          sold: 38,
-          badge: 'New Arrival',
-          description: 'Premium Android flagship with S Pen',
-          featured: false
-        },
-        {
-          id: '5',
-          name: 'iPad Pro 12.9" M2',
-          originalPrice: 1199.99,
-          salePrice: 899.99,
-          discount: 25,
-          image: '📱',
-          category: 'Tablets',
-          endTime: '2024-12-26T23:59:59',
-          stock: 18,
-          sold: 62,
-          badge: 'Hot Deal',
-          description: 'Professional tablet for creative work',
-          featured: false
-        },
-        {
-          id: '6',
-          name: 'Apple Watch Series 9',
-          originalPrice: 449.99,
-          salePrice: 349.99,
-          discount: 22,
-          image: '⌚',
-          category: 'Smartwatches',
-          endTime: '2024-12-29T23:59:59',
-          stock: 30,
-          sold: 70,
-          badge: 'Popular',
-          description: 'Advanced health monitoring and fitness tracking',
-          featured: false
-        },
-        {
-          id: '7',
-          name: 'Canon EOS R6 Mark II',
-          originalPrice: 2799.99,
-          salePrice: 2199.99,
-          discount: 21,
-          image: '📷',
-          category: 'Cameras',
-          endTime: '2024-12-27T23:59:59',
-          stock: 5,
-          sold: 15,
-          badge: 'Exclusive',
-          description: 'Professional mirrorless camera for photographers',
-          featured: false
-        },
-        {
-          id: '8',
-          name: 'PlayStation 5 Console',
-          originalPrice: 499.99,
-          salePrice: 399.99,
-          discount: 20,
-          image: '🎮',
-          category: 'Gaming',
-          endTime: '2024-12-31T23:59:59',
-          stock: 10,
-          sold: 90,
-          badge: 'Gaming',
-          description: 'Next-gen gaming console with DualSense controller',
-          featured: true
-        }
-      ];
-      setDeals(mockDeals);
-      setFilteredDeals(mockDeals);
-      setIsLoading(false);
-    }, 1000);
+    const fetchDeals = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch deals from API
+        const response = await fetch('/api/deals');
+        const dealsData = await response.json();
+        
+        // Transform the data to match our interface
+        const transformedDeals: Deal[] = dealsData.map((deal: any) => ({
+          id: deal.id,
+          name: deal.title,
+          originalPrice: deal.originalPrice || deal.price * 1.2, // Estimate original price
+          salePrice: deal.price || deal.originalPrice * 0.8, // Estimate sale price
+          discount: deal.discount || 20,
+          image: deal.image,
+          category: deal.category,
+          endTime: deal.endDate,
+          stock: deal.stock || 50,
+          sold: deal.sold || 0,
+          badge: deal.badge || 'Deal',
+          description: deal.description,
+          featured: deal.featured || false
+        }));
+        
+        setDeals(transformedDeals);
+        setFilteredDeals(transformedDeals);
+      } catch (error) {
+        console.error('Error fetching deals:', error);
+        setDeals([]);
+        setFilteredDeals([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDeals();
   }, []);
 
   // Filter and sort deals
@@ -200,7 +117,7 @@ export default function DealsPage() {
     setFilteredDeals(filtered);
   }, [deals, searchTerm, selectedCategory, sortBy]);
 
-  const categories = ['all', 'Smartphones', 'Laptops', 'Headphones', 'Tablets', 'Smartwatches', 'Cameras', 'Gaming'];
+  const categories = ['all', 'Electronics', 'Fashion', 'Home & Garden'];
 
   const formatTimeLeft = (endTime: string) => {
     const now = new Date().getTime();
@@ -223,385 +140,332 @@ export default function DealsPage() {
     return Math.round((stock / total) * 100);
   };
 
-  if (isLoading) {
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      const searchParams = new URLSearchParams();
+      searchParams.set('search', searchTerm.trim());
+      window.location.href = `/deals?${searchParams.toString()}`;
+    }
+  };
+
+  if (loading) {
     return (
-      <div style={{ fontFamily: 'Inter, sans-serif', background: '#f8fafc', minHeight: '100vh' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
-          <div style={{ textAlign: 'center', padding: '4rem' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
-            <p style={{ color: '#64748b', fontSize: '1.125rem' }}>Loading amazing deals...</p>
-          </div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+        <Header />
+        <div className="pt-32">
+          <LoadingSpinner />
         </div>
       </div>
     );
   }
 
   return (
-    <div style={{ fontFamily: 'Inter, sans-serif', background: '#f8fafc', minHeight: '100vh' }}>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <Header />
-
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
-        {/* Hero Section */}
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <h1 style={{ fontSize: '3.5rem', fontWeight: '700', color: '#111827', marginBottom: '1rem' }}>
-            Amazing <span style={{
-              background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}>Deals</span>
-          </h1>
-          <p style={{ fontSize: '1.25rem', color: '#6b7280', maxWidth: '600px', margin: '0 auto', lineHeight: '1.6' }}>
-            Don't miss out on these incredible offers! Limited time deals with massive discounts on premium products.
-          </p>
-        </div>
-
-        {/* Flash Sale Banner */}
-        <div style={{
-          background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-          borderRadius: '16px',
-          padding: '2rem',
-          marginBottom: '3rem',
-          color: 'white',
-          textAlign: 'center'
-        }}>
-          <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⚡</div>
-          <h2 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '0.5rem' }}>
-            Flash Sale Alert!
-          </h2>
-          <p style={{ fontSize: '1.125rem', opacity: 0.9, marginBottom: '1.5rem' }}>
-            Up to 50% off on selected items. These deals won't last long!
-          </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <a href="#deals" style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: 'white',
-              color: '#dc2626',
-              textDecoration: 'none',
-              borderRadius: '8px',
-              fontWeight: '600'
-            }}>
-              Shop Now
-            </a>
-          </div>
-        </div>
-
-        {/* Search and Filter */}
-        <div style={{ background: 'white', borderRadius: '16px', padding: '2rem', marginBottom: '3rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: '2rem', alignItems: 'end' }}>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#374151', fontWeight: '500' }}>
-                Search Deals
-              </label>
-              <input
-                type="text"
-                placeholder="Search by product name or description..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '8px',
-                  fontSize: '1rem'
-                }}
-              />
-            </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#374151', fontWeight: '500' }}>
-                Category
-              </label>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                style={{
-                  padding: '0.75rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '8px',
-                  fontSize: '1rem',
-                  background: 'white',
-                  minWidth: '150px'
-                }}
-              >
-                {categories.map(category => (
-                  <option key={category} value={category}>
-                    {category === 'all' ? 'All Categories' : category}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#374151', fontWeight: '500' }}>
-                Sort By
-              </label>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                style={{
-                  padding: '0.75rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '8px',
-                  fontSize: '1rem',
-                  background: 'white',
-                  minWidth: '150px'
-                }}
-              >
-                <option value="featured">Featured</option>
-                <option value="discount">Highest Discount</option>
-                <option value="price">Lowest Price</option>
-                <option value="ending">Ending Soon</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Results Count */}
-        <div style={{ marginBottom: '2rem' }}>
-          <p style={{ color: '#6b7280', fontSize: '1rem' }}>
-            Showing {filteredDeals.length} of {deals.length} deals
-          </p>
-        </div>
-
-        {/* Deals Grid */}
-        <div id="deals" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>
-          {filteredDeals.map((deal) => (
-            <div key={deal.id} style={{
-              background: 'white',
-              borderRadius: '16px',
-              padding: '2rem',
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              transition: 'all 0.3s ease',
-              border: deal.featured ? '2px solid #22c55e' : '1px solid #e5e7eb',
-              position: 'relative'
-            }} onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-8px)';
-              e.currentTarget.style.boxShadow = '0 20px 25px rgba(0, 0, 0, 0.1)';
-            }} onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
-            }}>
-              {/* Badge */}
-              <div style={{
-                position: 'absolute',
-                top: '1rem',
-                right: '1rem',
-                background: deal.badge === 'Flash Sale' ? '#ef4444' : '#22c55e',
-                color: 'white',
-                padding: '0.25rem 0.75rem',
-                borderRadius: '12px',
-                fontSize: '0.75rem',
-                fontWeight: '600'
-              }}>
-                {deal.badge}
-              </div>
-
-              {/* Product Image */}
-              <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-                <div style={{
-                  width: '120px',
-                  height: '120px',
-                  background: 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)',
-                  borderRadius: '16px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '3rem',
-                  margin: '0 auto'
-                }}>
-                  {deal.image}
-                </div>
-              </div>
-
-              {/* Product Info */}
-              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#111827', marginBottom: '0.5rem' }}>
-                {deal.name}
-              </h3>
-              <p style={{ color: '#6b7280', fontSize: '0.875rem', marginBottom: '1rem' }}>
-                {deal.description}
-              </p>
-
-              {/* Pricing */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-                <span style={{ fontSize: '1.5rem', fontWeight: '700', color: '#22c55e' }}>
-                  ${deal.salePrice}
-                </span>
-                <span style={{ fontSize: '1rem', color: '#9ca3af', textDecoration: 'line-through' }}>
-                  ${deal.originalPrice}
-                </span>
-                <span style={{
-                  background: '#dcfce7',
-                  color: '#15803d',
-                  padding: '0.25rem 0.5rem',
-                  borderRadius: '4px',
-                  fontSize: '0.875rem',
-                  fontWeight: '600'
-                }}>
-                  -{deal.discount}%
-                </span>
-              </div>
-
-              {/* Time Left */}
-              <div style={{ marginBottom: '1rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                  <span style={{ fontSize: '1rem' }}>⏰</span>
-                  <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Ends in:</span>
-                </div>
-                <div style={{
-                  background: '#fef3c7',
-                  color: '#92400e',
-                  padding: '0.5rem',
-                  borderRadius: '8px',
-                  textAlign: 'center',
-                  fontWeight: '600'
-                }}>
-                  {formatTimeLeft(deal.endTime)}
-                </div>
-              </div>
-
-              {/* Stock Progress */}
-              <div style={{ marginBottom: '1.5rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                  <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Stock</span>
-                  <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-                    {deal.stock} left of {deal.stock + deal.sold}
-                  </span>
-                </div>
-                <div style={{
-                  width: '100%',
-                  height: '8px',
-                  background: '#e5e7eb',
-                  borderRadius: '4px',
-                  overflow: 'hidden'
-                }}>
-                  <div style={{
-                    width: `${getStockPercentage(deal.stock, deal.sold)}%`,
-                    height: '100%',
-                    background: deal.stock < 5 ? '#ef4444' : '#22c55e',
-                    transition: 'width 0.3s ease'
-                  }} />
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div style={{ display: 'flex', gap: '1rem' }}>
-                <a href={`/products/${deal.id}`} style={{
-                  flex: 1,
-                  padding: '0.75rem',
-                  backgroundColor: '#22c55e',
-                  color: 'white',
-                  textDecoration: 'none',
-                  borderRadius: '8px',
-                  textAlign: 'center',
-                  fontWeight: '600',
-                  transition: 'all 0.2s ease'
-                }} onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#16a34a';
-                }} onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#22c55e';
-                }}>
-                  View Details
-                </a>
-                <button 
-                  onClick={() => addItem({
-                    id: deal.id,
-                    name: deal.name,
-                    price: deal.salePrice,
-                    image: deal.image
-                  })}
-                  style={{
-                    padding: '0.75rem 1rem',
-                    backgroundColor: 'transparent',
-                    color: '#22c55e',
-                    border: '2px solid #22c55e',
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    fontWeight: '600',
-                    transition: 'all 0.2s ease'
-                  }} onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#22c55e';
-                    e.currentTarget.style.color = 'white';
-                  }} onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                    e.currentTarget.style.color = '#22c55e';
-                  }}>
-                  🛒
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Empty State */}
-        {filteredDeals.length === 0 && (
-          <div style={{ textAlign: 'center', background: 'white', borderRadius: '16px', padding: '4rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🔍</div>
-            <h3 style={{ fontSize: '1.5rem', fontWeight: '600', color: '#111827', marginBottom: '1rem' }}>
-              No deals found
-            </h3>
-            <p style={{ color: '#6b7280', marginBottom: '2rem' }}>
-              Try adjusting your search terms or filters to find amazing deals.
+      
+      {/* Hero Section */}
+      <section className="pt-32 pb-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-6">
+              Hot Deals & Flash Sales
+            </h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Don't miss out on these incredible deals! Limited time offers with massive discounts on premium products.
             </p>
-            <button
-              onClick={() => {
-                setSearchTerm('');
-                setSelectedCategory('all');
-                setSortBy('featured');
-              }}
-              style={{
-                padding: '0.75rem 1.5rem',
-                backgroundColor: '#22c55e',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontWeight: '600'
-              }}
-            >
-              Clear Filters
-            </button>
-          </div>
-        )}
-
-        {/* CTA Section */}
-        <div style={{ textAlign: 'center', background: 'white', borderRadius: '16px', padding: '3rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-          <h2 style={{ fontSize: '2.5rem', fontWeight: '700', color: '#111827', marginBottom: '1rem' }}>
-            Want More Amazing Deals?
-          </h2>
-          <p style={{ fontSize: '1.125rem', color: '#6b7280', marginBottom: '2rem', maxWidth: '600px', margin: '0 auto' }}>
-            Sign up for our newsletter to get notified about exclusive deals and flash sales.
-          </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <a href="/products" style={{
-              padding: '1rem 2rem',
-              backgroundColor: '#22c55e',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              fontSize: '1.125rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              textDecoration: 'none',
-              display: 'inline-block'
-            }}>
-              Browse All Products
-            </a>
-            <a href="/categories" style={{
-              padding: '1rem 2rem',
-              backgroundColor: 'transparent',
-              color: '#22c55e',
-              border: '2px solid #22c55e',
-              borderRadius: '12px',
-              fontSize: '1.125rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              textDecoration: 'none',
-              display: 'inline-block'
-            }}>
-              View Categories
-            </a>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* Flash Sale Banner */}
+      <section className="pb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gradient-to-r from-red-500 to-pink-500 rounded-2xl p-6 text-white text-center"
+          >
+            <div className="flex items-center justify-center space-x-4 mb-4">
+              <TrendingUp className="w-8 h-8" />
+              <h2 className="text-2xl font-bold">Flash Sale Active!</h2>
+            </div>
+            <p className="text-lg">Up to 50% off on selected items. Hurry, these deals won't last!</p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Filters Section */}
+      <section className="pb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-lg">
+            <div className="flex flex-col lg:flex-row gap-6 items-center">
+              {/* Search */}
+              <div className="flex-1 w-full lg:w-auto">
+                <form onSubmit={handleSearch} className="relative group">
+                  <div className="relative transform transition-all duration-300 ease-in-out group-hover:scale-105">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <input
+                      type="text"
+                      placeholder="Search deals..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 bg-white/80 backdrop-blur-sm border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+                    />
+                  </div>
+                </form>
+              </div>
+
+              {/* Category Filter */}
+              <div className="flex gap-4">
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="px-4 py-3 bg-white/80 backdrop-blur-sm border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900"
+                >
+                  {categories.map((category) => (
+                    <option key={category} value={category}>
+                      {category === 'all' ? 'All Categories' : category}
+                    </option>
+                  ))}
+                </select>
+
+                {/* Sort */}
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="px-4 py-3 bg-white/80 backdrop-blur-sm border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900"
+                >
+                  <option key="featured" value="featured">Featured</option>
+                  <option key="discount" value="discount">Highest Discount</option>
+                  <option key="price" value="price">Lowest Price</option>
+                  <option key="ending" value="ending">Ending Soon</option>
+                </select>
+
+                {/* View Mode */}
+                <div className="flex bg-white/80 backdrop-blur-sm border border-white/20 rounded-xl overflow-hidden">
+                  <button
+                    onClick={() => setViewMode('grid')}
+                    className={`p-3 transition-colors duration-200 ${
+                      viewMode === 'grid' ? 'bg-purple-500 text-white' : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <Grid className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode('list')}
+                    className={`p-3 transition-colors duration-200 ${
+                      viewMode === 'list' ? 'bg-purple-500 text-white' : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <List className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Deals Grid */}
+      <section className="pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {filteredDeals.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-16"
+            >
+              <div className="text-6xl mb-4">🎯</div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">No Deals Found</h3>
+              <p className="text-gray-600 mb-6">Try adjusting your search or filters</p>
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setSelectedCategory('all');
+                }}
+                className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300"
+              >
+                Clear Filters
+              </button>
+            </motion.div>
+          ) : (
+            <div className={`grid gap-6 ${
+              viewMode === 'grid' 
+                ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' 
+                : 'grid-cols-1'
+            }`}>
+              {filteredDeals.map((deal, index) => (
+                <motion.div
+                  key={deal.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className={`group relative bg-white border border-gray-100 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden transform-gpu hover:-translate-y-2 ${
+                    viewMode === 'list' ? 'flex' : ''
+                  }`}
+                >
+                  {/* Deal Badge */}
+                  <div className="absolute top-4 left-4 z-10">
+                    <span className="px-3 py-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold rounded-full">
+                      {deal.discount}% OFF
+                    </span>
+                  </div>
+
+                  {/* Countdown Timer */}
+                  <div className="absolute top-4 right-4 z-10">
+                    <div className="flex items-center space-x-1 px-2 py-1 bg-black/70 text-white text-xs rounded-full">
+                      <Clock className="w-3 h-3" />
+                      <span>{formatTimeLeft(deal.endTime)}</span>
+                    </div>
+                  </div>
+
+                  {/* Product Image */}
+                  <div className={`relative overflow-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 ${
+                    viewMode === 'list' ? 'w-48 h-48 flex-shrink-0' : 'aspect-[4/3]'
+                  }`}>
+                    <div className="w-full h-full flex items-center justify-center text-6xl">
+                      {deal.image}
+                    </div>
+                    {/* Image Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+
+                  {/* Product Info */}
+                  <div className={`p-6 flex-1 flex flex-col ${
+                    viewMode === 'list' ? 'justify-center' : ''
+                  }`}>
+                    {/* Category and Rating */}
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="inline-block px-3 py-1 bg-purple-50 text-purple-700 text-xs font-medium rounded-full">
+                        {deal.category}
+                      </span>
+                      <div className="flex items-center gap-1">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`w-3 h-3 ${
+                              i < 4 ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Product Name */}
+                    <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
+                      {deal.name}
+                    </h3>
+
+                    {/* Description */}
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                      {deal.description}
+                    </p>
+
+                    {/* Pricing */}
+                    <div className="mb-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-3xl font-bold text-gray-900">
+                          ${deal.salePrice.toFixed(2)}
+                        </span>
+                        <span className="text-lg text-gray-500 line-through">
+                          ${deal.originalPrice.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded-full">
+                          Save ${(deal.originalPrice - deal.salePrice).toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Stock Progress */}
+                    <div className="mb-4">
+                      <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                        <span>Stock: {deal.stock} left</span>
+                        <span>{getStockPercentage(deal.stock, deal.sold)}% remaining</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${getStockPercentage(deal.stock, deal.sold)}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="space-y-3">
+                      <button
+                        onClick={() => addItem({
+                          id: deal.id,
+                          name: deal.name,
+                          price: deal.salePrice,
+                          image: deal.image
+                        })}
+                        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 px-6 rounded-xl hover:from-purple-600 hover:to-pink-600 transform hover:scale-[1.02] hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
+                      >
+                        <ShoppingCart className="w-4 h-4" />
+                        Add to Cart
+                      </button>
+                      
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            if (isInWishlist(deal.id)) {
+                              removeFromWishlist(deal.id);
+                            } else {
+                              addToWishlist({
+                                id: deal.id,
+                                name: deal.name,
+                                price: deal.salePrice,
+                                image: deal.image
+                              });
+                            }
+                          }}
+                          className={`flex-1 py-2 px-4 rounded-xl border transition-all duration-300 flex items-center justify-center gap-2 ${
+                            isInWishlist(deal.id)
+                              ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100'
+                              : 'border-gray-200 text-gray-600 hover:border-purple-300 hover:text-purple-600'
+                          }`}
+                        >
+                          <Heart className={`w-4 h-4 ${isInWishlist(deal.id) ? 'fill-current' : ''}`} />
+                          {isInWishlist(deal.id) ? 'Remove' : 'Wishlist'}
+                        </button>
+                        
+                        <button className="flex-1 py-2 px-4 border border-gray-200 text-gray-600 rounded-xl hover:border-purple-300 hover:text-purple-600 transition-all duration-300 flex items-center justify-center gap-2">
+                          <Eye className="w-4 h-4" />
+                          View
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl p-8 text-center text-white"
+          >
+            <h2 className="text-3xl font-bold mb-4">Don't Miss Out!</h2>
+            <p className="text-xl mb-6 opacity-90">
+              Subscribe to get notified about new deals and flash sales
+            </p>
+            <button className="px-8 py-4 bg-white text-purple-600 font-bold rounded-xl hover:bg-gray-100 transition-colors duration-300 flex items-center gap-2 mx-auto">
+              <ArrowRight className="w-5 h-5" />
+              Subscribe Now
+            </button>
+          </motion.div>
+        </div>
+      </section>
     </div>
   );
 } 

@@ -116,22 +116,54 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                   }}
                 >
                   {/* Product Image */}
-                  <div style={{
-                    width: '60px',
-                    height: '60px',
-                    background: '#f3f4f6',
-                    borderRadius: '8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '2rem',
-                    flexShrink: 0
-                  }}>
-                    {item.image}
+                  <div 
+                    key={`image-${item.id}`}
+                    style={{
+                      width: '60px',
+                      height: '60px',
+                      background: '#f3f4f6',
+                      borderRadius: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '2rem',
+                      flexShrink: 0,
+                      overflow: 'hidden',
+                      position: 'relative'
+                    }}
+                  >
+                    {item.image && item.image.startsWith('http') ? (
+                      <img 
+                        src={item.image} 
+                        alt={item.name}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover'
+                        }}
+                        onError={(e) => {
+                          const target = e.currentTarget as HTMLImageElement;
+                          target.style.display = 'none';
+                          const fallback = target.nextElementSibling as HTMLElement;
+                          if (fallback) fallback.style.display = 'flex';
+                        }}
+                      />
+                    ) : null}
+                    <div 
+                      style={{
+                        display: item.image && item.image.startsWith('http') ? 'none' : 'flex',
+                        width: '100%',
+                        height: '100%',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      {item.image || '📦'}
+                    </div>
                   </div>
 
                   {/* Product Details */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
+                  <div key={`details-${item.id}`} style={{ flex: 1, minWidth: 0 }}>
                     <h3 style={{
                       fontSize: '0.875rem',
                       fontWeight: '600',
@@ -154,6 +186,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                     {/* Quantity Controls */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                       <button
+                        key={`decrease-${item.id}`}
                         onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
                         style={{
                           width: '24px',
@@ -170,15 +203,19 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                       >
                         -
                       </button>
-                      <span style={{
-                        fontSize: '0.875rem',
-                        fontWeight: '600',
-                        minWidth: '20px',
-                        textAlign: 'center'
-                      }}>
+                      <span 
+                        key={`quantity-${item.id}`}
+                        style={{
+                          fontSize: '0.875rem',
+                          fontWeight: '600',
+                          minWidth: '20px',
+                          textAlign: 'center'
+                        }}
+                      >
                         {item.quantity}
                       </span>
                       <button
+                        key={`increase-${item.id}`}
                         onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
                         style={{
                           width: '24px',
@@ -200,6 +237,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
 
                   {/* Remove Button */}
                   <button
+                    key={`remove-${item.id}`}
                     onClick={() => removeItem(item.id)}
                     style={{
                       background: 'none',
@@ -242,6 +280,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
             {/* Actions */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               <a
+                key="view-cart"
                 href="/cart"
                 style={{
                   padding: '0.75rem',
@@ -259,6 +298,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                 View Cart
               </a>
               <a
+                key="checkout"
                 href="/checkout"
                 style={{
                   padding: '0.75rem',
@@ -276,6 +316,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                 Checkout
               </a>
               <button
+                key="clear-cart"
                 onClick={clearCart}
                 style={{
                   padding: '0.75rem',

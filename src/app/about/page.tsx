@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Header from '@/components/Header';
+import { motion } from 'framer-motion';
 
 export default function AboutPage() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
@@ -28,37 +30,20 @@ export default function AboutPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-green-50 to-green-100 font-sans">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-green-200 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-xl">U</span>
-            </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">
-              UltimateEcommerce
-            </span>
-          </div>
-          <a 
-            href="/" 
-            className="px-6 py-2 bg-green-600 text-white rounded-full font-medium hover:bg-green-700 transition-all duration-300 hover:shadow-lg hover:scale-105"
-          >
-            ← Back to Home
-          </a>
-        </div>
-      </header>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <Header />
 
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-6 py-12 pt-32">
         {/* Hero Section */}
-        <div className={`text-center mb-20 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <div className="inline-block mb-6">
-            <span className="text-sm font-semibold text-green-600 bg-green-100 px-4 py-2 rounded-full">
-              About Us
-            </span>
-          </div>
+        <motion.div 
+          className={`text-center mb-20 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+
           <h1 className="text-6xl md:text-7xl font-bold mb-8">
-            <span className="bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
               Revolutionizing
             </span>
             <br />
@@ -68,21 +53,26 @@ export default function AboutPage() {
             We're building the future of ecommerce with cutting-edge technology, AI-powered recommendations, 
             and an immersive shopping experience that puts customers first.
           </p>
-        </div>
+        </motion.div>
 
         {/* Mission Section */}
-        <div className={`mb-20 transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <div className="bg-white rounded-3xl p-12 shadow-2xl border border-green-100">
+        <motion.div 
+          className={`mb-20 transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <div className="bg-white border border-gray-200 rounded-3xl p-12 shadow-xl">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
                 <div className="inline-block mb-6">
-                  <span className="text-sm font-semibold text-green-600 bg-green-100 px-4 py-2 rounded-full">
+                  <span className="text-sm font-semibold text-purple-600 bg-purple-100 px-4 py-2 rounded-full">
                     Our Mission
                   </span>
                 </div>
                 <h2 className="text-4xl font-bold text-gray-800 mb-6">
                   Creating the Ultimate
-                  <span className="bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent"> Shopping Experience</span>
+                  <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"> Shopping Experience</span>
                 </h2>
                 <p className="text-lg text-gray-600 leading-relaxed mb-8">
                   To create the most advanced ecommerce platform that seamlessly blends cutting-edge technology 
@@ -96,31 +86,36 @@ export default function AboutPage() {
                     'Real-time inventory tracking'
                   ].map((feature, index) => (
                     <div key={index} className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                       <span className="text-gray-700 font-medium">{feature}</span>
                     </div>
                   ))}
                 </div>
               </div>
               <div className="text-center">
-                <div className="w-48 h-48 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
+                <div className="w-48 h-48 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
                   <span className="text-8xl">🎯</span>
                 </div>
-                <p className="text-green-600 font-semibold text-lg">Driving innovation in ecommerce</p>
+                <p className="text-purple-600 font-semibold text-lg">Driving innovation in ecommerce</p>
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Values Section */}
-        <div className={`mb-20 transition-all duration-1000 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+        <motion.div 
+          className={`mb-20 transition-all duration-1000 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+        >
           <div className="text-center mb-12">
-            <span className="text-sm font-semibold text-green-600 bg-green-100 px-4 py-2 rounded-full">
+            <span className="text-sm font-semibold text-purple-600 bg-purple-100 px-4 py-2 rounded-full">
               Our Values
             </span>
             <h2 className="text-4xl font-bold text-gray-800 mt-4">
               What Drives Us
-              <span className="bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent"> Forward</span>
+              <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"> Forward</span>
             </h2>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -156,20 +151,24 @@ export default function AboutPage() {
                 description: 'We strive for excellence in everything we do, from product quality to customer service.'
               }
             ].map((value, index) => (
-              <div 
+              <motion.div 
                 key={index} 
-                className={`bg-white rounded-2xl p-8 text-center transition-all duration-500 cursor-pointer ${
+                className={`bg-white border border-gray-200 rounded-2xl p-8 text-center transition-all duration-500 cursor-pointer ${
                   hoveredCard === index 
-                    ? 'shadow-2xl transform -translate-y-2 border-2 border-green-500' 
-                    : 'shadow-lg border border-green-100 hover:shadow-xl'
+                    ? 'shadow-2xl transform -translate-y-2 border-2 border-purple-500' 
+                    : 'shadow-lg hover:shadow-xl'
                 }`}
                 onMouseEnter={() => handleCardHover(index)}
                 onMouseLeave={handleCardLeave}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                whileHover={{ y: -8, scale: 1.02 }}
               >
                 <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center text-4xl transition-all duration-300 ${
                   hoveredCard === index 
-                    ? 'bg-gradient-to-br from-green-500 to-green-600 shadow-lg' 
-                    : 'bg-green-100'
+                    ? 'bg-gradient-to-br from-purple-500 to-pink-500 shadow-lg' 
+                    : 'bg-purple-100'
                 }`}>
                   {value.icon}
                 </div>
@@ -179,21 +178,26 @@ export default function AboutPage() {
                 <p className="text-gray-600 leading-relaxed">
                   {value.description}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Team Section */}
-        <div className={`mb-20 transition-all duration-1000 delay-600 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <div className="bg-white rounded-3xl p-12 shadow-2xl border border-green-100">
+        <motion.div 
+          className={`mb-20 transition-all duration-1000 delay-600 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+        >
+          <div className="bg-white border border-gray-200 rounded-3xl p-12 shadow-xl">
             <div className="text-center mb-12">
-              <span className="text-sm font-semibold text-green-600 bg-green-100 px-4 py-2 rounded-full">
+              <span className="text-sm font-semibold text-purple-600 bg-purple-100 px-4 py-2 rounded-full">
                 Our Team
               </span>
               <h2 className="text-4xl font-bold text-gray-800 mt-4">
                 Meet the
-                <span className="bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent"> Innovators</span>
+                <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"> Innovators</span>
               </h2>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -223,20 +227,24 @@ export default function AboutPage() {
                   description: 'Operations expert ensuring seamless customer experiences.'
                 }
               ].map((member, index) => (
-                <div 
+                <motion.div 
                   key={index} 
                   className={`text-center p-6 rounded-2xl transition-all duration-500 cursor-pointer ${
                     hoveredTeam === index 
-                      ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-2xl transform -translate-y-2' 
-                      : 'hover:bg-green-50'
+                      ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-2xl transform -translate-y-2' 
+                      : 'hover:bg-purple-50'
                   }`}
                   onMouseEnter={() => handleTeamHover(index)}
                   onMouseLeave={handleTeamLeave}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
                 >
                   <div className={`w-24 h-24 mx-auto mb-4 rounded-full flex items-center justify-center text-4xl transition-all duration-300 ${
                     hoveredTeam === index 
                       ? 'bg-white/20' 
-                      : 'bg-green-100'
+                      : 'bg-purple-100'
                   }`}>
                     {member.image}
                   </div>
@@ -246,7 +254,7 @@ export default function AboutPage() {
                     {member.name}
                   </h3>
                   <p className={`font-medium mb-3 ${
-                    hoveredTeam === index ? 'text-white/90' : 'text-green-600'
+                    hoveredTeam === index ? 'text-white/90' : 'text-purple-600'
                   }`}>
                     {member.role}
                   </p>
@@ -255,22 +263,27 @@ export default function AboutPage() {
                   }`}>
                     {member.description}
                   </p>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Stats Section */}
-        <div className={`mb-20 transition-all duration-1000 delay-800 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <div className="bg-gradient-to-br from-green-600 to-green-700 rounded-3xl p-12 text-white shadow-2xl">
+        <motion.div 
+          className={`mb-20 transition-all duration-1000 delay-800 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+        >
+          <div className="bg-gradient-to-br from-purple-600 to-pink-600 rounded-3xl p-12 text-white shadow-2xl">
             <div className="text-center mb-12">
               <span className="text-sm font-semibold bg-white/20 px-4 py-2 rounded-full">
                 Our Impact
               </span>
               <h2 className="text-4xl font-bold mt-4">
                 Numbers That
-                <span className="text-green-200"> Matter</span>
+                <span className="text-purple-200"> Matter</span>
               </h2>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
@@ -280,28 +293,40 @@ export default function AboutPage() {
                 { number: '99.9%', label: 'Uptime' },
                 { number: '4.9/5', label: 'Customer Rating' }
               ].map((stat, index) => (
-                <div key={index} className="group">
+                <motion.div 
+                  key={index} 
+                  className="group"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  whileHover={{ scale: 1.05 }}
+                >
                   <div className="text-5xl font-bold mb-2 group-hover:scale-110 transition-transform duration-300">
                     {stat.number}
                   </div>
                   <div className="text-lg opacity-90 font-medium">
                     {stat.label}
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* CTA Section */}
-        <div className={`transition-all duration-1000 delay-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <div className="bg-white rounded-3xl p-12 shadow-2xl border border-green-100 text-center">
-            <div className="w-24 h-24 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+        <motion.div 
+          className={`transition-all duration-1000 delay-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.0 }}
+        >
+          <div className="bg-white border border-gray-200 rounded-3xl p-12 shadow-xl text-center">
+            <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6">
               <span className="text-4xl">🚀</span>
             </div>
             <h2 className="text-4xl font-bold text-gray-800 mb-4">
               Ready to Experience the
-              <span className="bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent"> Future?</span>
+              <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"> Future?</span>
             </h2>
             <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
               Join thousands of customers who have already discovered the ultimate shopping experience.
@@ -309,19 +334,19 @@ export default function AboutPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a 
                 href="/products" 
-                className="px-8 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold rounded-full hover:shadow-xl hover:scale-105 transition-all duration-300"
+                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-full hover:shadow-xl hover:scale-105 transition-all duration-300"
               >
                 Start Shopping Now
               </a>
               <a 
                 href="/contact" 
-                className="px-8 py-4 bg-white text-green-600 font-semibold rounded-full border-2 border-green-600 hover:bg-green-600 hover:text-white transition-all duration-300"
+                className="px-8 py-4 bg-white text-purple-600 font-semibold rounded-full border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300"
               >
                 Get in Touch
               </a>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
