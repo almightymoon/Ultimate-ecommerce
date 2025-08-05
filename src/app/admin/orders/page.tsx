@@ -24,7 +24,7 @@ import {
   Plus,
   Download,
   RefreshCw,
-  MoreHorizontal
+  X
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -86,7 +86,6 @@ export default function AdminOrders() {
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingOrder, setEditingOrder] = useState<Order | null>(null);
   const [editLoading, setEditLoading] = useState(false);
@@ -132,17 +131,7 @@ export default function AdminOrders() {
     fetchOrders();
   }, []);
 
-  // Close menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (openMenuId && !(event.target as Element).closest('.menu-container')) {
-        setOpenMenuId(null);
-      }
-    };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [openMenuId]);
 
   const filteredOrders = orders.filter(order => {
     const matchesSearch = (order._id?.toString() || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -263,7 +252,6 @@ export default function AdminOrders() {
   const handleEditOrder = (order: Order) => {
     setEditingOrder(order);
     setShowEditModal(true);
-    setOpenMenuId(null);
   };
 
   const handleUpdateOrder = async (updatedData: Partial<Order>) => {
@@ -609,47 +597,31 @@ export default function AdminOrders() {
                     <div className="text-sm text-gray-900">{formatDate(order.createdAt)}</div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="relative">
-                      <button
-                        onClick={() => setOpenMenuId(openMenuId === order._id ? null : order._id)}
-                        className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded transition-colors duration-200"
-                        title="More Actions"
+                    <div className="flex space-x-2">
+                      <Link
+                        href={`/admin/orders/${order._id}`}
+                        className="p-1 text-gray-400 hover:text-blue-600 transition-colors duration-200"
+                        title="View Order"
                       >
-                        <MoreHorizontal className="w-4 h-4" />
+                        <Eye className="w-4 h-4" />
+                      </Link>
+                      <button 
+                        onClick={() => handleEditOrder(order)}
+                        className="p-1 text-gray-400 hover:text-blue-600 transition-colors duration-200"
+                        title="Edit Order"
+                      >
+                        <Edit className="w-4 h-4" />
                       </button>
-                      
-                      {openMenuId === order._id && (
-                        <div className="menu-container absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50" style={{ minWidth: '12rem' }}>
-                          <div className="py-1">
-                            <Link
-                              href={`/admin/orders/${order._id}`}
-                              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                              onClick={() => setOpenMenuId(null)}
-                            >
-                              <Eye className="w-4 h-4 mr-3" />
-                              View Order
-                            </Link>
-                            <button 
-                              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                              onClick={() => handleEditOrder(order)}
-                            >
-                              <Edit className="w-4 h-4 mr-3" />
-                              Edit Order
-                            </button>
-                            <button 
-                              onClick={() => {
-                                setSelectedOrders([order._id]);
-                                setShowDeleteModal(true);
-                                setOpenMenuId(null);
-                              }}
-                              className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
-                            >
-                              <Trash2 className="w-4 h-4 mr-3" />
-                              Delete Order
-                            </button>
-                          </div>
-                        </div>
-                      )}
+                      <button 
+                        onClick={() => {
+                          setSelectedOrders([order._id]);
+                          setShowDeleteModal(true);
+                        }}
+                        className="p-1 text-gray-400 hover:text-red-600 transition-colors duration-200"
+                        title="Delete Order"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   </td>
                 </motion.tr>

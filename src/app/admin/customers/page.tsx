@@ -32,10 +32,10 @@ interface Customer {
   totalOrders?: number;
   totalSpent?: number;
   lastOrder?: string;
-  status: 'active' | 'inactive' | 'suspended' | 'pending';
-  avatar: string;
-  role: 'customer' | 'admin' | 'moderator';
-  verified: boolean;
+  status?: 'active' | 'inactive' | 'suspended' | 'pending';
+  avatar?: string;
+  role?: 'customer' | 'admin' | 'moderator';
+  verified?: boolean;
   lastLogin?: string;
   address?: {
     street: string;
@@ -482,13 +482,13 @@ export default function CustomersPage() {
                         <td className="px-6 py-4">
                           <div className="flex items-center space-x-3">
                             <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center text-lg shadow-sm">
-                              {customer.avatar}
+                              {customer.avatar || customer.name?.charAt(0) || 'U'}
                             </div>
                             <div>
                               <p className="font-semibold text-gray-900">{customer.name}</p>
                               <div className="flex items-center space-x-2 mt-1">
                                 <p className="text-xs text-gray-500">ID: {customer.id}</p>
-                                {customer.verified && (
+                                {(customer.verified || false) && (
                                   <span className="px-1.5 py-0.5 rounded-full text-xs font-medium text-green-600 bg-green-50">
                                     ✓ Verified
                                   </span>
@@ -512,7 +512,7 @@ export default function CustomersPage() {
                         <td className="px-6 py-4">
                           <div className="flex flex-col space-y-1">
                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleColor(customer.role || 'customer')}`}>
-                              {customer.role ? customer.role.charAt(0).toUpperCase() + customer.role.slice(1) : 'Customer'}
+                              {(customer.role || 'customer').charAt(0).toUpperCase() + (customer.role || 'customer').slice(1)}
                             </span>
                             {customer.lastLogin && (
                               <span className="text-xs text-gray-500">
@@ -531,7 +531,7 @@ export default function CustomersPage() {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex flex-col">
-                            <span className="text-sm font-bold text-gray-900">{customer.totalOrders}</span>
+                            <span className="text-sm font-bold text-gray-900">{customer.totalOrders || 0}</span>
                             {customer.lastOrder && (
                               <span className="text-xs text-gray-500">
                                 Last: {new Date(customer.lastOrder).toLocaleDateString()}
@@ -544,16 +544,16 @@ export default function CustomersPage() {
                             <span className="text-sm font-bold text-green-600">
                               ${(customer.totalSpent || 0).toLocaleString()}
                             </span>
-                            {customer.totalOrders > 0 && (
+                            {(customer.totalOrders || 0) > 0 && (
                               <span className="text-xs text-gray-500">
-                                Avg: ${((customer.totalSpent || 0) / customer.totalOrders).toFixed(2)}
+                                Avg: ${((customer.totalSpent || 0) / (customer.totalOrders || 1)).toFixed(2)}
                               </span>
                             )}
                           </div>
                         </td>
                         <td className="px-6 py-4">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(customer.status)}`}>
-                            {customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}
+                            {(customer.status || 'pending').charAt(0).toUpperCase() + (customer.status || 'pending').slice(1)}
                           </span>
                         </td>
                         <td className="px-6 py-4">
@@ -605,7 +605,7 @@ export default function CustomersPage() {
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center space-x-3">
                         <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center text-xl shadow-sm">
-                          {customer.avatar}
+                          {customer.avatar || customer.name?.charAt(0) || 'U'}
                         </div>
                         <div className="flex-1 min-w-0">
                           <h3 className="font-semibold text-gray-900 truncate">{customer.name}</h3>
@@ -625,12 +625,12 @@ export default function CustomersPage() {
                     {/* Role and Status Badges */}
                     <div className="flex items-center space-x-2 mb-4">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleColor(customer.role || 'customer')}`}>
-                        {customer.role ? customer.role.charAt(0).toUpperCase() + customer.role.slice(1) : 'Customer'}
+                        {(customer.role || 'customer').charAt(0).toUpperCase() + (customer.role || 'customer').slice(1)}
                       </span>
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(customer.status)}`}>
-                        {customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}
+                        {(customer.status || 'pending').charAt(0).toUpperCase() + (customer.status || 'pending').slice(1)}
                       </span>
-                      {customer.verified && (
+                      {(customer.verified || false) && (
                         <span className="px-2 py-1 rounded-full text-xs font-medium text-green-600 bg-green-50">
                           ✓ Verified
                         </span>
@@ -665,7 +665,7 @@ export default function CustomersPage() {
                           <ShoppingBag className="w-4 h-4 text-blue-500" />
                           <span className="text-xs text-blue-600">Orders</span>
                         </div>
-                        <p className="text-sm font-bold text-blue-900">{customer.totalOrders}</p>
+                        <p className="text-sm font-bold text-blue-900">{customer.totalOrders || 0}</p>
                       </div>
                       <div className="bg-green-50 rounded-lg p-3">
                         <div className="flex items-center space-x-2 mb-1">
