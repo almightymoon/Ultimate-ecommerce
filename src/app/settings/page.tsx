@@ -5,19 +5,12 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { 
-  Settings, 
   Bell, 
   Shield, 
   Eye, 
   EyeOff, 
   Lock, 
   User, 
-  Mail, 
-  Smartphone,
-  Globe,
-  Palette,
-  Save,
-  X,
   CheckCircle,
   AlertTriangle
 } from 'lucide-react';

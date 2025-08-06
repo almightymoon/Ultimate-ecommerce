@@ -6,7 +6,7 @@ import { useWishlist } from '@/contexts/WishlistContext';
 import { useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { Search, Filter, Grid, List, Heart, ShoppingCart, Eye, Star, ArrowRight, Clock, TrendingUp } from 'lucide-react';
+import { Search, Grid, List, Heart, ShoppingCart, Eye, Star, ArrowRight, Clock, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface Deal {

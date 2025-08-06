@@ -6,7 +6,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import Header from '@/components/Header';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import ImageCarousel from '@/components/ImageCarousel';
 import { 
@@ -19,14 +19,9 @@ import {
   Shield,
   RefreshCw,
   CheckCircle,
-  AlertCircle,
   Minus,
   Plus,
   Share2,
-  Eye,
-  Package,
-  Zap,
-  X as XIcon
 } from 'lucide-react';
 
 interface Product {

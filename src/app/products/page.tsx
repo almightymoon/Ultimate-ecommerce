@@ -6,7 +6,7 @@ import { useWishlist } from '@/contexts/WishlistContext';
 import { useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { Search, Filter, Grid, List, Heart, ShoppingCart, Eye, Star } from 'lucide-react';
+import { Search, Grid, List, Heart, ShoppingCart, Eye, Star } from 'lucide-react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
@@ -44,7 +44,7 @@ function ProductsContent() {
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlist();
   const searchParams = useSearchParams();
   
-  const [products, setProducts] = useState<Product[]>([]);
+
   const [allProducts, setAllProducts] = useState<Product[]>([]); // Store all products
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]); // Store filtered products
   const [categories, setCategories] = useState<Category[]>([]);

@@ -13,11 +13,8 @@ import {
   Gift,
   Star,
   X,
-  CheckCircle,
   AlertCircle,
-  ArrowRight,
-  Plus,
-  Minus
+  ArrowRight
 } from 'lucide-react';
 
 export default function WishlistPage() {

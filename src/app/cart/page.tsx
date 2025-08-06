@@ -13,10 +13,8 @@ import {
   Lock, 
   Shield, 
   Truck, 
-  CreditCard,
   Gift,
   Star,
-  Heart,
   X,
   CheckCircle,
   AlertCircle

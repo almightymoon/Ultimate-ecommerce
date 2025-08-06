@@ -1,15 +1,13 @@
 'use client';
 
 import React, { useEffect, useState, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { CheckCircle, ArrowRight, Download, Mail, Home, Package, ArrowLeft } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import CuteInvoice from '@/components/CuteInvoice';
 import ReviewRequest from '@/components/ReviewRequest';
 
 function CheckoutSuccessContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [orderId, setOrderId] = useState('');
   const [orderData, setOrderData] = useState<{

@@ -5,12 +5,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { 
-  User, 
-  Mail, 
-  Phone, 
-  MapPin, 
   Edit, 
-  Save, 
   X, 
   Shield, 
   Bell, 

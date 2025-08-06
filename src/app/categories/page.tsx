@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
-import { useCart } from '@/contexts/CartContext';
-import { useWishlist } from '@/contexts/WishlistContext';
+
 import { useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { Search, Filter, Grid, List, Heart, ShoppingCart, Eye, Star, ArrowRight } from 'lucide-react';
+import { Search, Grid, List, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
@@ -21,8 +20,7 @@ interface Category {
 }
 
 function CategoriesContent() {
-  const { addItem } = useCart();
-  const { addItem: addToWishlist, isInWishlist, removeItem: removeFromWishlist } = useWishlist();
+
   const searchParams = useSearchParams();
   
   const [categories, setCategories] = useState<Category[]>([]);
