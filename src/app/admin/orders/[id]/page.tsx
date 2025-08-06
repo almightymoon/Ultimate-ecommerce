@@ -173,7 +173,7 @@ export default function OrderDetailPage() {
         <div className="text-center">
           <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Order Not Found</h2>
-          <p className="text-gray-600 mb-4">The order you're looking for doesn't exist.</p>
+          <p className="text-gray-600 mb-4">The order you&apos;re looking for doesn&apos;t exist.</p>
           <button
             onClick={() => router.back()}
             className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors"

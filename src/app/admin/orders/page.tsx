@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { 
   ShoppingCart, 
   Search, 
-  Filter, 
   Eye, 
   Edit, 
   Truck, 
@@ -13,17 +12,10 @@ import {
   Clock, 
   AlertCircle,
   DollarSign,
-  User,
-  Calendar,
   Package,
-  CreditCard,
-  MapPin,
-  Phone,
-  Mail,
   Trash2,
   Plus,
   Download,
-  RefreshCw,
   X
 } from 'lucide-react';
 import Link from 'next/link';
@@ -142,12 +134,12 @@ export default function AdminOrders() {
   });
 
   const sortedOrders = [...filteredOrders].sort((a, b) => {
-    let aValue: any = a[sortBy as keyof Order];
-    let bValue: any = b[sortBy as keyof Order];
+    let aValue: string | number = a[sortBy as keyof Order] as string | number;
+    let bValue: string | number = b[sortBy as keyof Order] as string | number;
     
     if (sortBy === 'total') {
-      aValue = parseFloat(aValue);
-      bValue = parseFloat(bValue);
+      aValue = parseFloat(aValue as string);
+      bValue = parseFloat(bValue as string);
     }
     
     if (sortOrder === 'asc') {

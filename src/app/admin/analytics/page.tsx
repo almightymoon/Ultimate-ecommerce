@@ -446,7 +446,7 @@ export default function AnalyticsDashboard() {
                 <h3 className="font-semibold text-blue-800">User Acquisition</h3>
               </div>
               <p className="text-sm text-blue-700">
-                You've gained {data.metrics.newUsers} new users in the last {selectedPeriod}. 
+                You&apos;ve gained {data.metrics.newUsers} new users in the last {selectedPeriod}. 
                 Your conversion rate of {data.metrics.conversionRate}% is above industry average.
               </p>
             </div>

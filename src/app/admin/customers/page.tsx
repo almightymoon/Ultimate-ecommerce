@@ -5,14 +5,11 @@ import { motion } from 'framer-motion';
 import { 
   Users, 
   Search, 
-  Filter, 
   Mail, 
   Phone, 
   Calendar, 
   Eye, 
   Edit, 
-  Trash2,
-  MoreVertical,
   UserPlus,
   Download,
   Star,
@@ -90,13 +87,13 @@ export default function CustomersPage() {
   });
 
   const sortedCustomers = [...filteredCustomers].sort((a, b) => {
-    let aValue: any = a[sortBy as keyof Customer];
-    let bValue: any = b[sortBy as keyof Customer];
+    let aValue: string | number | Date = a[sortBy as keyof Customer] as string | number | Date;
+    let bValue: string | number | Date = b[sortBy as keyof Customer] as string | number | Date;
 
     if (sortBy === 'joinDate' || sortBy === 'lastOrder') {
       // Handle invalid dates by using a fallback
-      const aDate = aValue ? new Date(aValue).getTime() : 0;
-      const bDate = bValue ? new Date(bValue).getTime() : 0;
+      const aDate = aValue ? new Date(aValue as string).getTime() : 0;
+      const bDate = bValue ? new Date(bValue as string).getTime() : 0;
       aValue = isNaN(aDate) ? 0 : aDate;
       bValue = isNaN(bDate) ? 0 : bDate;
     }
@@ -147,7 +144,7 @@ export default function CustomersPage() {
       } else {
         alert('Failed to delete customer');
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error deleting customer:', error);
       alert('Error deleting customer');
     }
@@ -193,7 +190,7 @@ export default function CustomersPage() {
       if (response.ok) {
         setCustomers(customers.map(customer => 
           customer.id === customerId 
-            ? { ...customer, status: newStatus as any }
+            ? { ...customer, status: newStatus as 'active' | 'inactive' | 'suspended' | 'pending' }
             : customer
         ));
         alert(`Customer status updated to ${newStatus}`);

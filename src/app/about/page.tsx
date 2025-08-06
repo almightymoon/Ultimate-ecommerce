@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function AboutPage() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
@@ -50,7 +51,7 @@ export default function AboutPage() {
             <span className="text-gray-800">Online Shopping</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            We're building the future of ecommerce with cutting-edge technology, AI-powered recommendations, 
+            We&apos;re building the future of ecommerce with cutting-edge technology, AI-powered recommendations, 
             and an immersive shopping experience that puts customers first.
           </p>
         </motion.div>
@@ -143,7 +144,7 @@ export default function AboutPage() {
               {
                 icon: '🌱',
                 title: 'Sustainability',
-                description: "We're committed to reducing our environmental impact and promoting sustainable shopping practices."
+                description: "We&apos;re committed to reducing our environmental impact and promoting sustainable shopping practices."
               },
               {
                 icon: '🎨',
@@ -332,18 +333,18 @@ export default function AboutPage() {
               Join thousands of customers who have already discovered the ultimate shopping experience.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a 
+              <Link 
                 href="/products" 
                 className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-full hover:shadow-xl hover:scale-105 transition-all duration-300"
               >
                 Start Shopping Now
-              </a>
-              <a 
+              </Link>
+              <Link 
                 href="/contact" 
                 className="px-8 py-4 bg-white text-purple-600 font-semibold rounded-full border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300"
               >
                 Get in Touch
-              </a>
+              </Link>
             </div>
           </div>
         </motion.div>

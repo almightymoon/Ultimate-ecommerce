@@ -35,7 +35,7 @@ export function useHydrationSuppression() {
 /**
  * Removes browser extension elements that cause hydration issues
  */
-export function cleanupBrowserExtensions() {
+export function useCleanupBrowserExtensions() {
   useEffect(() => {
     // Remove pronounce extension elements
     const pronounceElements = document.querySelectorAll('[id*="pronounce"], [class*="pronounce"]');

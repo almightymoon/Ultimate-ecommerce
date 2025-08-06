@@ -10,9 +10,7 @@ import {
   Edit, 
   Trash2, 
   Eye,
-  Filter,
   Download,
-  Upload,
   X
 } from 'lucide-react';
 import ImageUpload from '@/components/ImageUpload';
@@ -83,12 +81,12 @@ export default function AdminCategories() {
   });
 
   const sortedCategories = [...filteredCategories].sort((a, b) => {
-    let aValue: any = a[sortBy as keyof Category];
-    let bValue: any = b[sortBy as keyof Category];
+    let aValue: string | number = a[sortBy as keyof Category] as string | number;
+    let bValue: string | number = b[sortBy as keyof Category] as string | number;
     
     if (sortBy === 'createdAt' || sortBy === 'updatedAt') {
-      aValue = new Date(aValue).getTime();
-      bValue = new Date(bValue).getTime();
+      aValue = new Date(aValue as string).getTime();
+      bValue = new Date(bValue as string).getTime();
     }
     
     if (sortOrder === 'asc') {
