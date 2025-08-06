@@ -10,7 +10,6 @@ import {
   ShoppingCart, 
   Settings, 
   BarChart3, 
-  MessageSquare, 
   FileText,
   Menu,
   X,
@@ -22,10 +21,6 @@ import {
   Home,
   Tag,
   Star,
-  Truck,
-  CreditCard,
-  TrendingUp,
-  Eye,
   DollarSign
 } from 'lucide-react';
 import Link from 'next/link';

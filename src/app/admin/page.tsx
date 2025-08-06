@@ -9,17 +9,13 @@ import {
   Package, 
   TrendingUp, 
   TrendingDown,
-  Eye,
   Star,
   Clock,
   CheckCircle,
   AlertCircle,
   XCircle,
-  ArrowUpRight,
-  ArrowDownRight,
   BarChart3,
-  LineChart,
-  PieChart
+  LineChart
 } from 'lucide-react';
 import Link from 'next/link';
 

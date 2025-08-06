@@ -5,12 +5,17 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 
 interface PayPalButtonProps {
   amount: number;
-  onSuccess: (details: any) => void;
-  onError: (error: any) => void;
+  onSuccess: (details: { id: string; transactionId?: string }) => void;
+  onError: (error: { message: string }) => void;
   onCancel: () => void;
   disabled?: boolean;
   className?: string;
-  items?: any[];
+  items?: Array<{
+    id: string;
+    name: string;
+    price: number;
+    quantity: number;
+  }>;
 }
 
 export default function PayPalButton({ 
@@ -40,6 +45,7 @@ export default function PayPalButton({
     };
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const createOrder = useCallback((data: any, actions: any) => {
     if (!isMountedRef.current) return Promise.reject('Component unmounted');
     
@@ -67,12 +73,13 @@ export default function PayPalButton({
         setOrderId(id);
       }
       return id;
-    }).catch((error: any) => {
+    }).catch((error: { message: string }) => {
       console.error('Error creating PayPal order:', error);
       throw error;
     });
   }, [amount]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onApprove = useCallback(async (data: any, actions: any) => {
     if (!isMountedRef.current) return;
     
@@ -99,7 +106,7 @@ export default function PayPalButton({
       const details = await Promise.race([
         actions.order.capture(),
         captureTimeout
-      ]);
+      ]) as { id: string; transactionId?: string };
       
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
@@ -109,7 +116,7 @@ export default function PayPalButton({
       console.log('PayPal capture successful:', details);
       
       if (isMountedRef.current) {
-        onSuccess(details);
+        onSuccess({ id: details.id || 'unknown', transactionId: details.transactionId });
       }
     } catch (error) {
       if (timeoutRef.current) {
@@ -136,7 +143,7 @@ export default function PayPalButton({
         }
         
         setHasError(true);
-        onError(error);
+        onError({ message: error instanceof Error ? error.message : String(error) });
         setIsProcessing(false);
       }
     }
@@ -152,7 +159,7 @@ export default function PayPalButton({
     }
   }, [onCancel]);
 
-  const handlePayPalError = useCallback((err: any) => {
+  const handlePayPalError = useCallback((err: { message?: string }) => {
     if (isMountedRef.current) {
       console.error('PayPal error:', err);
       
@@ -166,7 +173,7 @@ export default function PayPalButton({
       }
       
       setHasError(true);
-      onError(err);
+      onError({ message: err.message || 'Unknown error' });
     }
   }, [onError, retryCount]);
 

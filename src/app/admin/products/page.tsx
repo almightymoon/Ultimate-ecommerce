@@ -1,21 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
-  Package, 
   Plus, 
   Search, 
-  Filter, 
   Grid, 
   List, 
   Edit, 
   Trash2, 
   Eye, 
-  MoreHorizontal,
   Star,
-  ShoppingCart,
-  Tag,
   TrendingUp,
   TrendingDown
 } from 'lucide-react';

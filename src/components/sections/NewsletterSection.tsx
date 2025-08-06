@@ -62,7 +62,7 @@ export default function NewsletterSection() {
               Welcome to the Family!
             </h2>
             <p className="text-xl text-gray-600 mb-6">
-              Thank you for subscribing to our newsletter. You'll be the first to know about our latest products and exclusive offers.
+              Thank you for subscribing to our newsletter. You&apos;ll be the first to know about our latest products and exclusive offers.
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}

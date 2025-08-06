@@ -5,8 +5,8 @@ import PayPalButtonAlternative from './PayPalButtonAlternative';
 
 interface ClientOnlyPayPalButtonProps {
   amount: number;
-  onSuccess: (details: any) => void;
-  onError: (error: any) => void;
+  onSuccess: (details: { id: string; transactionId?: string }) => void;
+  onError: (error: { message: string }) => void;
   onCancel: () => void;
   disabled?: boolean;
   className?: string;

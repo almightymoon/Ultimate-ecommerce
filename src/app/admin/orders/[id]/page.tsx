@@ -15,13 +15,11 @@ import {
   AlertCircle,
   DollarSign,
   User,
-  Calendar,
   MapPin,
   Phone,
   Mail,
   CreditCard,
-  Download,
-  Share2
+  Download
 } from 'lucide-react';
 import CuteInvoice from '@/components/CuteInvoice';
 

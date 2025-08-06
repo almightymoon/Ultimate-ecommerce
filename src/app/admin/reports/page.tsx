@@ -38,7 +38,7 @@ export default function AdminReports() {
   const [loading, setLoading] = useState(true);
   const [reportType, setReportType] = useState('overview');
   const [period, setPeriod] = useState('30');
-  const [activeTab, setActiveTab] = useState('overview');
+
 
   const reportTypes = [
     { value: 'overview', label: 'Overview', icon: BarChart3 },

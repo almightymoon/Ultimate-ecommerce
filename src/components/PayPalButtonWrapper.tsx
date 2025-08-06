@@ -5,8 +5,8 @@ import { PayPalButtons } from '@paypal/react-paypal-js';
 
 interface PayPalButtonWrapperProps {
   amount: number;
-  onSuccess: (details: any) => void;
-  onError: (error: any) => void;
+  onSuccess: (details: { id: string; transactionId?: string }) => void;
+  onError: (error: { message: string }) => void;
   onCancel: () => void;
   disabled?: boolean;
   className?: string;
@@ -29,6 +29,7 @@ export default function PayPalButtonWrapper({
     setHasError(false);
   }, [amount]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const createOrder = useCallback((data: any, actions: any) => {
     console.log('Creating PayPal order for amount:', amount);
     return actions.order.create({
@@ -52,6 +53,7 @@ export default function PayPalButtonWrapper({
     });
   }, [amount]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onApprove = useCallback(async (data: any, actions: any) => {
     if (data.orderID !== orderId) {
       console.warn('Order ID mismatch, ignoring');
@@ -73,16 +75,16 @@ export default function PayPalButtonWrapper({
     } catch (error) {
       console.error('Error capturing payment:', error);
       setHasError(true);
-      onError(error);
+      onError({ message: error instanceof Error ? error.message : String(error) });
     } finally {
       setIsProcessing(false);
     }
   }, [orderId, isProcessing, onSuccess, onError]);
 
-  const handleError = useCallback((err: any) => {
+  const handleError = useCallback((err: { message?: string }) => {
     console.error('PayPal error:', err);
     setHasError(true);
-    onError(err);
+          onError({ message: err.message || 'Unknown error' });
   }, [onError]);
 
   const handleCancel = useCallback(() => {

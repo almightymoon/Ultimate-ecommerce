@@ -85,7 +85,7 @@ export default function ReviewRequest({
                     How was your experience?
                   </h2>
                   <p className="text-gray-600">
-                    We'd love to hear about {productName}!
+                    We&apos;d love to hear about {productName}!
                   </p>
                 </div>
 

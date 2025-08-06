@@ -39,7 +39,7 @@ export default function TestPayPalPage() {
                 title: "Test Product",
                 price: 10.50,
                 quantity: 1,
-                description: "A test product for PayPal integration"
+                name: "A test product for PayPal integration"
               }
             ]}
             onSuccess={handleSuccess}

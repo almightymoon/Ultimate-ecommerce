@@ -299,7 +299,7 @@ export default function AnalyticsDashboard() {
               <PieChart className="w-5 h-5 text-gray-400" />
             </div>
             <div className="space-y-4">
-              {data.categoryStats.map((category, index) => (
+              {data.categoryStats.map((category) => (
                 <div key={category._id} className="flex items-center justify-between">
                   <div className="flex-1">
                     <p className="font-medium text-gray-900 capitalize">{category._id}</p>

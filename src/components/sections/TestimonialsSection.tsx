@@ -111,7 +111,7 @@ export default function TestimonialsSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-xl text-gray-600 max-w-3xl mx-auto"
           >
-            Don't just take our word for it. Here's what our satisfied customers have to say about their shopping experience.
+            Don&apos;t just take our word for it. Here&apos;s what our satisfied customers have to say about their shopping experience.
           </motion.p>
         </div>
 
@@ -162,7 +162,7 @@ export default function TestimonialsSection() {
               </div>
               
               <p className="text-gray-700 mb-6 leading-relaxed">
-                "{testimonial.content}"
+                &quot;{testimonial.content}&quot;
               </p>
 
               <div className="flex items-center">

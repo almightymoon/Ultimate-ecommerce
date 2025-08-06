@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { 
   ShoppingCartIcon, 
   HeartIcon, 
@@ -56,7 +57,7 @@ export function Header() {
       <div className="header-content">
         {/* Logo */}
         <div className="logo">
-          <a href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
             <div style={{ 
               width: '32px', 
               height: '32px', 
@@ -70,13 +71,13 @@ export function Header() {
               <span style={{ color: 'white', fontWeight: 'bold', fontSize: '18px' }}>U</span>
             </div>
             <span style={{ fontSize: '24px', fontWeight: 'bold', color: '#22c55e' }}>UltimateEcommerce</span>
-          </a>
+          </Link>
         </div>
 
         {/* Desktop Navigation */}
         <nav className="nav">
-          <a href="/">Home</a>
-          <a href="/products">Products</a>
+          <Link href="/">Home</Link>
+          <Link href="/products">Products</Link>
           <a href="/categories">Categories</a>
           <a href="/deals">Deals</a>
           <a href="/about">About</a>
@@ -220,8 +221,8 @@ export function Header() {
           padding: '24px 16px' 
         }}>
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
-            <a href="/" style={{ color: '#374151', textDecoration: 'none' }}>Home</a>
-            <a href="/products" style={{ color: '#374151', textDecoration: 'none' }}>Products</a>
+            <Link href="/" style={{ color: '#374151', textDecoration: 'none' }}>Home</Link>
+            <Link href="/products" style={{ color: '#374151', textDecoration: 'none' }}>Products</Link>
             <a href="/categories" style={{ color: '#374151', textDecoration: 'none' }}>Categories</a>
             <a href="/deals" style={{ color: '#374151', textDecoration: 'none' }}>Deals</a>
             <a href="/about" style={{ color: '#374151', textDecoration: 'none' }}>About</a>
@@ -242,10 +243,10 @@ export function Header() {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <a href="/login" style={{ padding: '8px 16px', color: '#374151', textDecoration: 'none' }}>
+              <Link href="/login" style={{ padding: '8px 16px', color: '#374151', textDecoration: 'none' }}>
                 Login
-              </a>
-              <a href="/register" style={{ 
+              </Link>
+              <Link href="/register" style={{ 
                 padding: '8px 16px', 
                 backgroundColor: '#22c55e', 
                 color: 'white', 
@@ -253,7 +254,7 @@ export function Header() {
                 textDecoration: 'none' 
               }}>
                 Sign Up
-              </a>
+              </Link>
             </div>
           </div>
         </div>

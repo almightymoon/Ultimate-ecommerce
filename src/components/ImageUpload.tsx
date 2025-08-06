@@ -102,7 +102,7 @@ export default function ImageUpload({
       const result = await response.json();
 
       if (result.success) {
-        const urls = result.uploaded.map((upload: any) => upload.url);
+        const urls = result.uploaded.map((upload: { url: string }) => upload.url);
         onImagesUploaded(urls);
         
         // Update images with uploaded status

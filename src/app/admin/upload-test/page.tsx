@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Upload, CheckCircle, AlertCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle } from 'lucide-react';
 import ImageUpload from '@/components/ImageUpload';
 
 export default function UploadTestPage() {

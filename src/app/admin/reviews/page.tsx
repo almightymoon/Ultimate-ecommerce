@@ -40,8 +40,8 @@ export default function AdminReviews() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
   const [ratingFilter, setRatingFilter] = useState<number | null>(null);
-  const [sortBy, setSortBy] = useState('createdAt');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [sortBy] = useState('createdAt');
+  const [sortOrder] = useState<'asc' | 'desc'>('desc');
 
   const statusOptions = [
     { value: 'all', label: 'All Status', icon: Filter },

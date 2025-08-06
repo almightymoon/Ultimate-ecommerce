@@ -5,9 +5,15 @@ import { PayPalButtons } from '@paypal/react-paypal-js';
 
 interface PayPalButtonAlternativeProps {
   amount: number;
-  products?: any[];
-  onSuccess: (details: any) => void;
-  onError: (error: any) => void;
+  products?: Array<{
+    id?: string;
+    title?: string;
+    name?: string;
+    price: number;
+    quantity: number;
+  }>;
+  onSuccess: (details: { id: string; transactionId?: string; orderId?: string }) => void;
+  onError: (error: { message: string }) => void;
   onCancel: () => void;
   disabled?: boolean;
   className?: string;
@@ -131,18 +137,18 @@ function PayPalButtonAlternative({
             });
             const orderData = await orderRes.json();
             if (orderRes.ok) {
-              if (onSuccess) onSuccess({ details, orderId: orderData.orderId });
+              if (onSuccess) onSuccess({ id: details.id || 'unknown', orderId: orderData.orderId });
             } else {
-              if (onError) onError(orderData.error || 'Failed to save PayPal order');
+              if (onError) onError({ message: orderData.error || 'Failed to save PayPal order' });
             }
           } catch (error) {
             console.error('PayPal order save error:', error);
-            if (onError) onError(error instanceof Error ? error.message : String(error));
+            if (onError) onError({ message: error instanceof Error ? error.message : String(error) });
           }
         }}
         onError={(err) => {
           console.error('PayPal Checkout Error: ', err);
-          if (onError) onError(err instanceof Error ? err.message : String(err));
+          if (onError) onError({ message: err instanceof Error ? err.message : String(err) });
         }}
         onCancel={() => {
           console.log('PayPal payment cancelled');
