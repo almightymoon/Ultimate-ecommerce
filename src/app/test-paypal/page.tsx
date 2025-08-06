@@ -4,12 +4,12 @@ import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import PayPalButtonAlternative from '@/components/PayPalButtonAlternative';
 
 export default function TestPayPalPage() {
-  const handleSuccess = (details: any) => {
+  const handleSuccess = (details: { id: string; transactionId?: string }) => {
     console.log('✅ PayPal payment successful:', details);
     alert('Payment successful!');
   };
 
-  const handleError = (error: any) => {
+  const handleError = (error: { message: string }) => {
     console.error('❌ PayPal payment error:', error);
     alert('Payment failed: ' + error.message);
   };

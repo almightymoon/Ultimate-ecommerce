@@ -256,7 +256,7 @@ export default function OrdersPage() {
               <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100 text-center">
                 <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">No orders found</h3>
-                <p className="text-gray-600 mb-6">You haven't placed any orders yet.</p>
+                <p className="text-gray-600 mb-6">You haven&apos;t placed any orders yet.</p>
                 <button
                   onClick={() => router.push('/products')}
                   className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all duration-300"

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Header from '@/components/Header';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Clock, Send, CheckCircle } from 'lucide-react';
+import Link from 'next/link';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -50,7 +51,7 @@ export default function ContactPage() {
             Get in Touch
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+            Have questions? We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
           </p>
         </motion.div>
 
@@ -80,7 +81,7 @@ export default function ContactPage() {
                   Message Sent Successfully!
                 </h3>
                 <p className="text-gray-600 mb-8">
-                  Thank you for contacting us. We'll get back to you within 24 hours.
+                  Thank you for contacting us. We&apos;ll get back to you within 24 hours.
                 </p>
                 <button
                   onClick={() => setIsSubmitted(false)}
@@ -261,12 +262,12 @@ export default function ContactPage() {
               <p className="mb-6 opacity-90">
                 Check out our comprehensive FAQ section for quick answers to common questions.
               </p>
-              <a 
+              <Link 
                 href="/faq" 
                 className="inline-block px-6 py-3 bg-white text-purple-600 font-semibold rounded-xl hover:bg-gray-100 transition-colors duration-300"
               >
                 View FAQ
-              </a>
+              </Link>
             </div>
           </motion.div>
         </div>
@@ -341,18 +342,18 @@ export default function ContactPage() {
             Our customer support team is here to help you with any questions or concerns you may have.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a 
+            <Link 
               href="/products" 
               className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
             >
               Start Shopping
-            </a>
-            <a 
+            </Link>
+            <Link 
               href="/about" 
               className="px-8 py-4 border-2 border-purple-600 text-purple-600 font-semibold rounded-xl hover:bg-purple-600 hover:text-white transition-all duration-300"
             >
               Learn More About Us
-            </a>
+            </Link>
           </div>
         </motion.div>
       </div>

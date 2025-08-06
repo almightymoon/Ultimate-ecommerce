@@ -7,6 +7,7 @@ import { useWishlist } from '@/contexts/WishlistContext';
 import Header from '@/components/Header';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 import ImageCarousel from '@/components/ImageCarousel';
 import { 
   Heart, 
@@ -148,7 +149,7 @@ export default function ProductDetailPage() {
               Product not found
             </h2>
             <p className="text-gray-600 text-lg mb-8">
-              The product you're looking for doesn't exist
+              The product you&apos;re looking for doesn&apos;t exist
             </p>
             <motion.a
               whileHover={{ scale: 1.05 }}
@@ -233,9 +234,9 @@ export default function ProductDetailPage() {
                 transition={{ delay: 0.2 }}
                 className="flex items-center gap-2 text-sm text-gray-600"
               >
-                <a href="/products" className="hover:text-purple-600 transition-colors">
+                <Link href="/products" className="hover:text-purple-600 transition-colors">
                   Products
-                </a>
+                </Link>
                 <ChevronRight className="w-4 h-4" />
                 <span className="text-gray-900 font-medium">{product.name}</span>
               </motion.div>

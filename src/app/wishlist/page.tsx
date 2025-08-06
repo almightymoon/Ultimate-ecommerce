@@ -27,7 +27,7 @@ export default function WishlistPage() {
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [addingToCart, setAddingToCart] = useState<string | null>(null);
 
-  const handleAddToCart = async (item: any) => {
+  const handleAddToCart = async (item: { id: string; name: string; price: number; image: string }) => {
     setAddingToCart(item.id);
     setTimeout(() => {
       addItem({

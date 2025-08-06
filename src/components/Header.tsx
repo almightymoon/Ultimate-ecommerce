@@ -85,7 +85,7 @@ export default function Header() {
   const handleSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      handleSearch(e as any);
+      handleSearch(e as React.FormEvent);
     }
   };
 

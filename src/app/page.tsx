@@ -82,7 +82,7 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.6 }}
               className="text-xl text-white/90 mb-8 max-w-3xl mx-auto"
             >
-              Don't miss out on our biggest sale of the year. Premium quality products at unbeatable prices.
+              Don&apos;t miss out on our biggest sale of the year. Premium quality products at unbeatable prices.
             </motion.p>
 
             <motion.div

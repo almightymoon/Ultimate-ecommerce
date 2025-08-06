@@ -80,7 +80,7 @@ export default function ProfilePage() {
     if (name.includes('.')) {
       const [parent, child] = name.split('.');
       setFormData(prev => {
-        const parentObj = prev[parent as keyof FormData] as Record<string, any>;
+        const parentObj = prev[parent as keyof FormData] as Record<string, string>;
         return {
           ...prev,
           [parent]: {

@@ -243,8 +243,8 @@ function LoginContent() {
 
           {/* Sign Up Link */}
           <motion.div variants={itemVariants} className="text-center mt-8 pt-6 border-t border-gray-100">
-            <p className="text-gray-600">
-              Don't have an account?{' '}
+                          <p className="text-gray-600">
+                Don&apos;t have an account?{' '}
               <Link
                 href="/signup"
                 className="text-purple-600 hover:text-purple-700 font-semibold transition-colors duration-200"

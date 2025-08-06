@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 
 interface FAQItem {
   id: string;
@@ -185,7 +186,7 @@ export default function FAQPage() {
             <span style={{ fontSize: '24px', fontWeight: 'bold', color: '#22c55e' }}>UltimateEcommerce</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <a href="/" style={{ padding: '8px 16px', color: '#374151', textDecoration: 'none' }}>← Back to Home</a>
+            <Link href="/" style={{ padding: '8px 16px', color: '#374151', textDecoration: 'none' }}>← Back to Home</Link>
           </div>
         </div>
       </header>
@@ -349,7 +350,7 @@ export default function FAQPage() {
                 No questions found
               </h3>
               <p style={{ color: '#6b7280', marginBottom: '2rem' }}>
-                Try adjusting your search terms or category filter to find what you're looking for.
+                Try adjusting your search terms or category filter to find what you&apos;re looking for.
               </p>
               <button
                 onClick={() => {

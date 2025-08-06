@@ -23,7 +23,13 @@ interface InvoiceProps {
   customerPhone: string;
   customerAddress: string;
   billingAddress?: string;
-  items: any[];
+  items: Array<{
+    id: string;
+    name: string;
+    price: number;
+    quantity: number;
+    image?: string;
+  }>;
   subtotal: number;
   tax: number;
   shipping?: number;
@@ -302,14 +308,14 @@ Thank you for your purchase! 🎉
                 <CheckCircle className="w-6 h-6 text-blue-500" />
               </div>
               <h4 className="font-medium text-gray-800 mb-1">Order Confirmed</h4>
-              <p className="text-sm text-gray-600">We've received your order</p>
+              <p className="text-sm text-gray-600">We&apos;ve received your order</p>
             </div>
             <div className="text-center p-4 bg-white rounded-xl">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
                 <Package className="w-6 h-6 text-green-500" />
               </div>
               <h4 className="font-medium text-gray-800 mb-1">Processing</h4>
-              <p className="text-sm text-gray-600">We're preparing your items</p>
+              <p className="text-sm text-gray-600">We&apos;re preparing your items</p>
             </div>
             <div className="text-center p-4 bg-white rounded-xl">
               <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
