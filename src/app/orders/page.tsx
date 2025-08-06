@@ -142,7 +142,7 @@ export default function OrdersPage() {
       setOrders(mockOrders);
       setLoading(false);
     }, 1000);
-  }, [authState, router]);
+  }, [authState, router, mockOrders]);
 
   const getStatusColor = (status: string) => {
     switch (status) {

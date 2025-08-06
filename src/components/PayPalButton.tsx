@@ -25,7 +25,7 @@ export default function PayPalButton({
   onCancel, 
   disabled = false,
   className = '',
-  items = []
+
 }: PayPalButtonProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);

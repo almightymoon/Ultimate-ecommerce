@@ -7,7 +7,6 @@ import {
   Package, 
   Truck, 
   CreditCard, 
-  Calendar,
   MapPin,
   Phone,
   Mail,
@@ -63,7 +62,7 @@ export default function CuteInvoice({
   paymentMethod,
   transactionId,
   orderDate,
-  dueDate,
+
   companyInfo = {
     name: 'Ultimate E-Commerce',
     address: '123 Business St, Tech City, TC 12345',

@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { ShoppingCart, Heart, User, Search, Menu, X, Bell, LogOut } from 'lucide-react';
+import { ShoppingCart, Heart, Search, Menu, X, Bell, LogOut } from 'lucide-react';
 
 export default function Header() {
   const { state: cartState } = useCart();
@@ -116,17 +116,7 @@ export default function Header() {
     return 'bg-transparent border-b border-transparent';
   };
 
-  const getTextColor = () => {
-    // Always use dark text on admin pages
-    if (isOnAdminPage) {
-      return 'text-gray-900';
-    }
-    
-    if (isOnWhiteBg || isScrolled) {
-      return 'text-gray-900';
-    }
-    return 'text-white';
-  };
+
 
   const getIconColor = () => {
     // Always use dark icons on admin pages

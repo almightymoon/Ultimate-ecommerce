@@ -124,7 +124,7 @@ function ProductsContent() {
 
       setFilteredProducts(sorted);
     }
-  }, [selectedCategory, searchTerm, sortBy, sortOrder, priceRange]); // Removed allProducts from dependencies
+  }, [selectedCategory, searchTerm, sortBy, sortOrder, priceRange, allProducts]);
 
   const handleAddToCart = (product: Product) => {
     addItem({

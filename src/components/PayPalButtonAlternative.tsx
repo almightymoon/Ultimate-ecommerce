@@ -28,9 +28,9 @@ function PayPalButtonAlternative({
   onCancel,
   disabled = false,
   className = '',
-  buttonText = 'Pay with PayPal'
+
 }: PayPalButtonAlternativeProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
 
   if (disabled) {
     return (
