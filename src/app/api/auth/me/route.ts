@@ -21,8 +21,8 @@ export async function GET(request: NextRequest) {
     // Verify token
     let decoded;
     try {
-      decoded = jwt.verify(token, JWT_SECRET) as any;
-    } catch (error) {
+      decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
+    } catch (error: unknown) {
       return NextResponse.json(
         { message: 'Invalid token' },
         { status: 401 }
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
     };
 
     return NextResponse.json(userData);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Get user error:', error);
     return NextResponse.json(
       { message: 'Internal server error' },

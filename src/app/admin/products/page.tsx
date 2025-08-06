@@ -21,15 +21,34 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  originalPrice?: number;
+  category: string;
+  stock: number;
+  sold: number;
+  rating: number;
+  featured: boolean;
+  image: string;
+  images?: string[];
+  badge?: string;
+  reviews?: number;
+  status?: string;
+  createdAt: string;
+}
+
 export default function AdminProducts() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState('asc');
   const [viewMode, setViewMode] = useState('grid');
-  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
 
   const categories = [
     { id: 'all', name: 'All Categories' },
@@ -81,12 +100,12 @@ export default function AdminProducts() {
   });
 
   const sortedProducts = [...filteredProducts].sort((a, b) => {
-    let aValue = a[sortBy];
-    let bValue = b[sortBy];
+    let aValue: string | number = a[sortBy as keyof Product] as string | number;
+    let bValue: string | number = b[sortBy as keyof Product] as string | number;
     
     if (sortBy === 'price' || sortBy === 'stock' || sortBy === 'sold' || sortBy === 'rating') {
-      aValue = parseFloat(aValue);
-      bValue = parseFloat(bValue);
+      aValue = parseFloat(aValue as string);
+      bValue = parseFloat(bValue as string);
     }
     
     if (sortOrder === 'asc') {
@@ -112,7 +131,7 @@ export default function AdminProducts() {
     }
   };
 
-  const handleDeleteProduct = async (productId) => {
+  const handleDeleteProduct = async (productId: string) => {
     if (!confirm('Are you sure you want to delete this product?')) {
       return;
     }
@@ -165,7 +184,7 @@ export default function AdminProducts() {
     }
   };
 
-  const handleToggleFeatured = async (productId, currentFeatured) => {
+  const handleToggleFeatured = async (productId: string, currentFeatured: boolean) => {
     try {
       const response = await fetch(`/api/admin/products/${productId}`, {
         method: 'PATCH',
@@ -357,8 +376,12 @@ export default function AdminProducts() {
                       alt={product.name}
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        e.target.style.display = 'none';
-                        e.target.nextSibling.style.display = 'flex';
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        const nextSibling = target.nextSibling as HTMLElement;
+                        if (nextSibling) {
+                          nextSibling.style.display = 'flex';
+                        }
                       }}
                     />
                   ) : null}
@@ -391,8 +414,8 @@ export default function AdminProducts() {
                       <span className="text-sm text-gray-600">{product.rating}</span>
                       <span className="text-sm text-gray-500">({product.reviews})</span>
                     </div>
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(product.status)}`}>
-                      {product.status}
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(product.status || 'active')}`}>
+                      {product.status || 'Active'}
                     </span>
                   </div>
 
@@ -488,8 +511,12 @@ export default function AdminProducts() {
                               alt={product.name}
                               className="w-full h-full object-cover"
                               onError={(e) => {
-                                e.target.style.display = 'none';
-                                e.target.nextSibling.style.display = 'flex';
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                const nextSibling = target.nextSibling as HTMLElement;
+                                if (nextSibling) {
+                                  nextSibling.style.display = 'flex';
+                                }
                               }}
                             />
                           ) : null}
@@ -515,8 +542,8 @@ export default function AdminProducts() {
                       <div className="text-sm text-gray-500">{product.sold} sold</div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(product.status)}`}>
-                        {product.status}
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(product.status || 'active')}`}>
+                        {product.status || 'Active'}
                       </span>
                     </td>
                     <td className="px-6 py-4">

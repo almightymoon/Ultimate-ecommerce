@@ -123,7 +123,7 @@ export function PaymentProvider({ children }: { children: ReactNode }) {
 
     // Set global flag
     if (typeof window !== 'undefined') {
-      window.paypalPaymentInProgress = state.preventUnmount || state.isProcessing || state.isCreatingOrder;
+      (window as any).paypalPaymentInProgress = state.preventUnmount || state.isProcessing || state.isCreatingOrder;
     }
 
     window.addEventListener('beforeunload', handleBeforeUnload);
@@ -133,7 +133,7 @@ export function PaymentProvider({ children }: { children: ReactNode }) {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       if (typeof window !== 'undefined') {
-        window.paypalPaymentInProgress = false;
+        (window as any).paypalPaymentInProgress = false;
       }
     };
   }, [state.preventUnmount, state.isProcessing, state.isCreatingOrder]);

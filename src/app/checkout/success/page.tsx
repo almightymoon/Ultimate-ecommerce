@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { CheckCircle, ArrowRight, Download, Mail, Home, Package, ArrowLeft } from 'lucide-react';
@@ -8,7 +8,7 @@ import Link from 'next/link';
 import CuteInvoice from '@/components/CuteInvoice';
 import ReviewRequest from '@/components/ReviewRequest';
 
-export default function CheckoutSuccessPage() {
+function CheckoutSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [orderId, setOrderId] = useState('');
@@ -151,5 +151,25 @@ export default function CheckoutSuccessPage() {
         productName={orderData?.items?.[0]?.name || "your recent purchase"}
       />
     </div>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <h1 className="text-xl font-semibold text-gray-900 mb-2">
+            Loading success page...
+          </h1>
+          <p className="text-gray-600">
+            Please wait while we load your order details.
+          </p>
+        </div>
+      </div>
+    }>
+      <CheckoutSuccessContent />
+    </Suspense>
   );
 } 

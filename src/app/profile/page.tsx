@@ -22,12 +22,25 @@ import {
   LogOut
 } from 'lucide-react';
 
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+  };
+}
+
 export default function ProfilePage() {
   const { state: authState, updateUser, logout } = useAuth();
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
     phone: '',
@@ -50,8 +63,8 @@ export default function ProfilePage() {
       setFormData({
         name: authState.user.name || '',
         email: authState.user.email || '',
-        phone: authState.user.phone || '',
-        address: authState.user.address || {
+        phone: '',
+        address: {
           street: '',
           city: '',
           state: '',
@@ -66,15 +79,18 @@ export default function ProfilePage() {
     const { name, value } = e.target;
     if (name.includes('.')) {
       const [parent, child] = name.split('.');
-      setFormData(prev => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent as keyof typeof prev],
-          [child]: value
-        }
-      }));
+      setFormData(prev => {
+        const parentObj = prev[parent as keyof FormData] as Record<string, any>;
+        return {
+          ...prev,
+          [parent]: {
+            ...parentObj,
+            [child]: value
+          }
+        } as FormData;
+      });
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      setFormData(prev => ({ ...prev, [name]: value } as FormData));
     }
   };
 

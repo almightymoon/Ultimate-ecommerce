@@ -549,7 +549,7 @@ export default function CustomersPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(customer.status)}`}>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(customer.status || 'pending')}`}>
                             {(customer.status || 'pending').charAt(0).toUpperCase() + (customer.status || 'pending').slice(1)}
                           </span>
                         </td>
@@ -624,7 +624,7 @@ export default function CustomersPage() {
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleColor(customer.role || 'customer')}`}>
                         {(customer.role || 'customer').charAt(0).toUpperCase() + (customer.role || 'customer').slice(1)}
                       </span>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(customer.status)}`}>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(customer.status || 'pending')}`}>
                         {(customer.status || 'pending').charAt(0).toUpperCase() + (customer.status || 'pending').slice(1)}
                       </span>
                       {(customer.verified || false) && (

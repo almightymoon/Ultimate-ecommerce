@@ -96,7 +96,7 @@ export default function CartPage() {
             transition={{ delay: 0.6, duration: 0.6 }}
             className="text-xl text-gray-600 mb-8 max-w-md"
           >
-            Looks like you haven't added any items to your cart yet. Start shopping to discover amazing products!
+            Looks like you haven&apos;t added any items to your cart yet. Start shopping to discover amazing products!
           </motion.p>
           
           <motion.div 
@@ -409,7 +409,7 @@ export default function CartPage() {
                     >
                       <div className="flex items-center gap-2 text-sm">
                         <CheckCircle className="w-4 h-4 text-purple-600" />
-                        <span className="text-purple-700 font-medium">You're saving ${(state.total * 0.15).toFixed(2)} with our best prices!</span>
+                        <span className="text-purple-700 font-medium">You&apos;re saving ${(state.total * 0.15).toFixed(2)} with our best prices!</span>
                       </div>
                     </motion.div>
                   </div>

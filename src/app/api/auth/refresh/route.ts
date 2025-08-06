@@ -21,8 +21,8 @@ export async function POST(request: NextRequest) {
     // Verify token
     let decoded;
     try {
-      decoded = jwt.verify(token, JWT_SECRET) as any;
-    } catch (error) {
+      decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
+    } catch (error: unknown) {
       return NextResponse.json(
         { message: 'Invalid token' },
         { status: 401 }
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       token: newToken,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Token refresh error:', error);
     return NextResponse.json(
       { message: 'Internal server error' },

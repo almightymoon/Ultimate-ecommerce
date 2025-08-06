@@ -119,7 +119,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
       if (savedWishlist) {
         const parsedWishlist = JSON.parse(savedWishlist);
         // Convert string dates back to Date objects
-        const itemsWithDates = parsedWishlist.map((item: any) => ({
+        const itemsWithDates = parsedWishlist.map((item: { addedAt: string; [key: string]: unknown }) => ({
           ...item,
           addedAt: new Date(item.addedAt),
         }));

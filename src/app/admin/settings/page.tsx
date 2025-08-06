@@ -3,9 +3,35 @@
 import React, { useState } from 'react';
 import AdminNav from '@/components/AdminNav';
 
+interface Settings {
+  storeName: string;
+  storeEmail: string;
+  storePhone: string;
+  storeAddress: string;
+  currency: string;
+  timezone: string;
+  language: string;
+  notifications: {
+    newOrders: boolean;
+    lowStock: boolean;
+    customerReviews: boolean;
+    salesReports: boolean;
+  };
+  shipping: {
+    freeShippingThreshold: number;
+    defaultShippingRate: number;
+    enableExpressShipping: boolean;
+  };
+  payment: {
+    stripeEnabled: boolean;
+    paypalEnabled: boolean;
+    cashOnDelivery: boolean;
+  };
+}
+
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('general');
-  const [settings, setSettings] = useState({
+  const [settings, setSettings] = useState<Settings>({
     storeName: 'TrendHive Store',
     storeEmail: 'admin@trendhive.com',
     storePhone: '+1 (555) 123-4567',
@@ -31,14 +57,17 @@ export default function SettingsPage() {
     }
   });
 
-  const handleSettingChange = (category: string, key: string, value: any) => {
-    setSettings(prev => ({
-      ...prev,
-      [category]: {
-        ...prev[category as keyof typeof prev],
-        [key]: value
-      }
-    }));
+  const handleSettingChange = (category: keyof Settings, key: string, value: string | boolean | number) => {
+    setSettings(prev => {
+      const categorySettings = prev[category] as Record<string, any>;
+      return {
+        ...prev,
+        [category]: {
+          ...categorySettings,
+          [key]: value
+        }
+      } as Settings;
+    });
   };
 
   const handleSave = () => {

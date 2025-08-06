@@ -76,7 +76,7 @@ export default function SettingsPage() {
         firstName: firstName || '',
         lastName: lastNameParts.join(' ') || '',
         email: authState.user.email || '',
-        phone: authState.user.phone || '',
+        phone: '',
         language: 'en',
         timezone: 'UTC'
       });
@@ -86,10 +86,9 @@ export default function SettingsPage() {
   const handleAccountSave = async () => {
     setIsLoading(true);
     try {
-      await updateUser({
+      await       updateUser({
         name: `${accountSettings.firstName} ${accountSettings.lastName}`,
-        email: accountSettings.email,
-        phone: accountSettings.phone
+        email: accountSettings.email
       });
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);

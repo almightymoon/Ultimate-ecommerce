@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useSearchParams } from 'next/navigation';
@@ -8,6 +8,7 @@ import Header from '@/components/Header';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { Search, Filter, Grid, List, Heart, ShoppingCart, Eye, Star, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 interface Category {
   id: string;
@@ -19,7 +20,7 @@ interface Category {
   subcategories: string[];
 }
 
-export default function CategoriesPage() {
+function CategoriesContent() {
   const { addItem } = useCart();
   const { addItem: addToWishlist, isInWishlist, removeItem: removeFromWishlist } = useWishlist();
   const searchParams = useSearchParams();
@@ -42,7 +43,7 @@ export default function CategoriesPage() {
         const categoriesData = await response.json();
         
         // Transform the data to match our interface
-        const transformedCategories: Category[] = categoriesData.map((cat: any) => ({
+        const transformedCategories: Category[] = categoriesData.map((cat: { id: string; name: string; description: string; image: string; productCount?: number; featured?: boolean; subcategories?: string[] }) => ({
           id: cat.id,
           name: cat.name,
           description: cat.description,
@@ -119,7 +120,7 @@ export default function CategoriesPage() {
               Browse Categories
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Discover our comprehensive range of products organized by category. Find exactly what you're looking for.
+              Discover our comprehensive range of products organized by category. Find exactly what you&apos;re looking for.
             </p>
           </div>
         </div>
@@ -203,7 +204,7 @@ export default function CategoriesPage() {
               <div className="text-6xl mb-4">🔍</div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">No categories found</h3>
               <p className="text-gray-600 mb-8">
-                Try adjusting your search terms or filters to find what you're looking for.
+                Try adjusting your search terms or filters to find what you&apos;re looking for.
               </p>
               <button
                 onClick={() => {
@@ -282,13 +283,13 @@ export default function CategoriesPage() {
                     </div>
 
                     {/* Browse Button */}
-                    <a
+                    <Link
                       href={`/products?category=${category.id}`}
                       className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 group-hover:shadow-lg"
                     >
                       Browse {category.name}
                       <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                    </a>
+                    </Link>
                   </div>
                 </motion.div>
               ))}
@@ -308,22 +309,42 @@ export default function CategoriesPage() {
               Browse our complete product catalog or contact our support team for assistance.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
+              <Link
                 href="/products"
                 className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
               >
                 View All Products
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/contact"
                 className="px-8 py-4 border-2 border-purple-600 text-purple-600 font-semibold rounded-xl hover:bg-purple-600 hover:text-white transition-all duration-300"
               >
                 Contact Support
-              </a>
+              </Link>
             </div>
           </div>
         </div>
       </section>
     </div>
+  );
+}
+
+export default function CategoriesPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <h1 className="text-xl font-semibold text-gray-900 mb-2">
+            Loading categories...
+          </h1>
+          <p className="text-gray-600">
+            Please wait while we load the categories.
+          </p>
+        </div>
+      </div>
+    }>
+      <CategoriesContent />
+    </Suspense>
   );
 } 

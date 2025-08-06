@@ -28,7 +28,7 @@ export default function TestPayPalPage() {
         <p className="text-gray-600 mb-4">Amount: $10.50</p>
         
         <PayPalScriptProvider options={{ 
-          "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "test",
+          clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "test",
           currency: 'USD',
           intent: 'capture'
         }}>

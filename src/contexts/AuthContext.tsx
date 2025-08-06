@@ -122,7 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const token = localStorage.getItem('ultimate-ecommerce-token');
         
         if (token) {
-          const decoded = jwtDecode(token) as any;
+          const decoded = jwtDecode(token) as { exp?: number };
           const currentTime = Date.now() / 1000;
           
           if (decoded.exp && decoded.exp > currentTime) {
@@ -147,7 +147,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 localStorage.removeItem('ultimate-ecommerce-token');
                 dispatch({ type: 'INITIALIZE', payload: { user: null, token: null } });
               }
-            } catch (error) {
+            } catch (error: unknown) {
               // Network error or other issue, clear token
               console.log('Error fetching user data, clearing token');
               localStorage.removeItem('ultimate-ecommerce-token');
@@ -161,7 +161,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else {
           dispatch({ type: 'INITIALIZE', payload: { user: null, token: null } });
         }
-      } catch (error) {
+      } catch (error: unknown) {
         console.error('Error initializing auth:', error);
         localStorage.removeItem('ultimate-ecommerce-token');
         dispatch({ type: 'INITIALIZE', payload: { user: null, token: null } });
@@ -322,7 +322,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!state.token) return false;
     
     try {
-      const decoded = jwtDecode(state.token) as any;
+      const decoded = jwtDecode(state.token) as { exp?: number };
       const currentTime = Date.now() / 1000;
       
       if (decoded.exp && decoded.exp <= currentTime) {

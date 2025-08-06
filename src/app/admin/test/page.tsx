@@ -2,9 +2,15 @@
 
 import { useEffect, useState } from 'react';
 
+interface User {
+  email: string;
+  role: string;
+  name: string;
+}
+
 export default function AdminTest() {
   const [authStatus, setAuthStatus] = useState('Loading...');
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -21,7 +27,7 @@ export default function AdminTest() {
           setAuthStatus('Not authenticated');
         }
       } catch (error) {
-        setAuthStatus('Error: ' + error.message);
+        setAuthStatus('Error: ' + (error instanceof Error ? error.message : 'Unknown error'));
       }
     };
 

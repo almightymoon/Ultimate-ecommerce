@@ -206,7 +206,7 @@ export default function AdminOrders() {
     } catch (error) {
       console.error('Error deleting order:', error);
       // You could add a toast notification here
-      alert(`Failed to delete order: ${error.message}`);
+      alert(`Failed to delete order: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setDeleteLoading(false);
       setShowDeleteModal(false);
@@ -234,7 +234,7 @@ export default function AdminOrders() {
       }
     } catch (error) {
       console.error('Error bulk deleting orders:', error);
-      alert(`Failed to bulk delete orders: ${error.message}`);
+      alert(`Failed to bulk delete orders: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setDeleteLoading(false);
       setShowDeleteModal(false);
@@ -277,7 +277,7 @@ export default function AdminOrders() {
       }
     } catch (error) {
       console.error('Error updating order:', error);
-      alert(`Failed to update order: ${error.message}`);
+      alert(`Failed to update order: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setEditLoading(false);
     }

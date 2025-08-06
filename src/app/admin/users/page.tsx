@@ -75,7 +75,7 @@ export default function AdminUsersPage() {
 
       if (data.success) {
         setUsers(users.map(user => 
-          user.id === userId ? { ...user, role: newRole as any } : user
+          user.id === userId ? { ...user, role: newRole as 'user' | 'admin' | 'super-admin' } : user
         ));
         setEditingUser(null);
         setShowSuccess(true);

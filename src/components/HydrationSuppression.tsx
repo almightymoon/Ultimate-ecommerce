@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useHydrationSuppression, cleanupBrowserExtensions } from '@/utils/hydration';
+import { useHydrationSuppression, useCleanupBrowserExtensions } from '@/utils/hydration';
 
 export default function HydrationSuppression() {
   useHydrationSuppression();
-  cleanupBrowserExtensions();
+  useCleanupBrowserExtensions();
 
   useEffect(() => {
     // Additional cleanup for browser extensions

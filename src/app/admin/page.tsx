@@ -79,7 +79,7 @@ export default function AdminDashboard() {
         
         // Calculate total sales from orders
         const totalSales = ordersData.success ? 
-          ordersData.orders.reduce((sum: number, order: any) => sum + (order.total || 0), 0) : 0;
+          ordersData.orders.reduce((sum: number, order: { total?: number }) => sum + (order.total || 0), 0) : 0;
         
         // Update stats with real data
         setStats([
@@ -229,7 +229,7 @@ export default function AdminDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Welcome back! Here's what's happening with your store today.</p>
+          <p className="text-gray-600">Welcome back! Here&apos;s what&apos;s happening with your store today.</p>
         </div>
         <div className="flex space-x-3">
           <button className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors duration-200">

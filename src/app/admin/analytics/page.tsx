@@ -13,7 +13,6 @@ import {
   ShoppingCart,
   CreditCard,
   CheckCircle,
-  Calendar,
   BarChart3,
   PieChart,
   Activity,

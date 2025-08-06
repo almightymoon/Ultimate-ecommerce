@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,8 +16,7 @@ import {
   AlertCircle,
   Truck,
   Shield,
-  RefreshCw,
-  X
+  RefreshCw
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -34,7 +33,7 @@ interface FormData {
   paymentMethod: 'card' | 'paypal';
 }
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { state, clearCart } = useCart();
@@ -61,14 +60,14 @@ export default function CheckoutPage() {
     paymentMethod: 'paypal'
   });
 
-  const calculateTotals = () => {
+  const calculateTotals = useCallback(() => {
     const subtotal = state.total;
     const shipping = 0; // Free shipping
     const tax = subtotal * 0.08; // 8% tax
     const total = subtotal + shipping + tax;
     
     return { subtotal, shipping, tax, total };
-  };
+  }, [state.total]);
 
   const handleRedirectPaymentSuccess = useCallback(async (transactionId: string) => {
     setLoading(true);
@@ -152,7 +151,7 @@ export default function CheckoutPage() {
     } finally {
       setLoading(false);
     }
-  }, [formData, state.items, clearCart, router, calculateTotals]);
+  }, [formData, state.items, clearCart, router, calculateTotals, authState.user?.id]);
 
   // Handle PayPal return/cancel URLs
   useEffect(() => {
@@ -219,7 +218,7 @@ export default function CheckoutPage() {
     if (authState.isAuthenticated && authState.user?.email && !formData.email) {
       setFormData(prev => ({
         ...prev,
-        email: authState.user.email
+        email: authState.user?.email || ''
       }));
     }
   }, [authState.isAuthenticated, authState.user?.email, formData.email]);
@@ -257,7 +256,7 @@ export default function CheckoutPage() {
     }
   };
 
-  const handlePayPalSuccess = async (details: any) => {
+  const handlePayPalSuccess = async (details: { id: string; transactionId?: string }) => {
     setLoading(true);
     try {
       const totals = calculateTotals();
@@ -337,7 +336,7 @@ export default function CheckoutPage() {
     }
   };
 
-  const handlePayPalError = (error: any) => {
+  const handlePayPalError = (error: unknown) => {
     console.error('PayPal error:', error);
     setPaymentStatus('failed');
     toast.error('Payment failed. Please try again.');
@@ -1038,5 +1037,25 @@ export default function CheckoutPage() {
         productName={state.items[0]?.name || 'your purchase'}
       />
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <h1 className="text-xl font-semibold text-gray-900 mb-2">
+            Loading checkout...
+          </h1>
+          <p className="text-gray-600">
+            Please wait while we prepare your checkout.
+          </p>
+        </div>
+      </div>
+    }>
+      <CheckoutContent />
+    </Suspense>
   );
 } 

@@ -84,7 +84,6 @@ export async function POST(request: NextRequest) {
       lastName: newUser.lastName,
       email: newUser.email,
       role: newUser.role,
-      avatar: newUser.avatar,
       preferences: newUser.preferences,
     };
 
