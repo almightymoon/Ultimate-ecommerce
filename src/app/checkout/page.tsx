@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import PayPalButtonAlternative from '@/components/PayPalButtonAlternative';
 import ReviewRequest from '@/components/ReviewRequest';
@@ -37,6 +38,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { state, clearCart } = useCart();
+  const { state: authState } = useAuth();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [orderComplete, setOrderComplete] = useState(false);
@@ -75,7 +77,7 @@ export default function CheckoutPage() {
       
       // Create order data for database
       const orderData = {
-        userId: 'guest',
+        userId: authState.user?.id || 'guest',
         items: state.items,
         shipping: {
           firstName: formData.firstName,
@@ -203,6 +205,25 @@ export default function CheckoutPage() {
     setIsClient(true);
   }, []);
 
+  // Check authentication
+  useEffect(() => {
+    if (authState.isInitialized && !authState.isAuthenticated) {
+      toast.error('Please login to continue with checkout');
+      router.push('/login?redirect=/checkout');
+      return;
+    }
+  }, [authState.isInitialized, authState.isAuthenticated, router]);
+
+  // Pre-fill email when user is authenticated
+  useEffect(() => {
+    if (authState.isAuthenticated && authState.user?.email && !formData.email) {
+      setFormData(prev => ({
+        ...prev,
+        email: authState.user.email
+      }));
+    }
+  }, [authState.isAuthenticated, authState.user?.email, formData.email]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
@@ -243,7 +264,7 @@ export default function CheckoutPage() {
       
       // Create order data for database
       const orderData = {
-        userId: 'guest', // You can get this from auth context
+        userId: authState.user?.id || 'guest',
         items: state.items,
         shipping: {
           firstName: formData.firstName,
@@ -364,6 +385,46 @@ export default function CheckoutPage() {
           <p className="text-gray-600">
             Please wait while we load your shopping cart.
           </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show loading state while checking authentication
+  if (!authState.isInitialized) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <h1 className="text-xl font-semibold text-gray-900 mb-2">
+            Checking authentication...
+          </h1>
+          <p className="text-gray-600">
+            Please wait while we verify your login status.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Redirect if not authenticated
+  if (!authState.isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-8">🔐</div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            Login Required
+          </h1>
+          <p className="text-gray-600 mb-8">
+            You must be logged in to proceed with checkout.
+          </p>
+          <button
+            onClick={() => router.push('/login?redirect=/checkout')}
+            className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-200"
+          >
+            Login to Continue
+          </button>
         </div>
       </div>
     );

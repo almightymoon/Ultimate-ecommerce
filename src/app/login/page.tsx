@@ -5,11 +5,13 @@ import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, CheckCircle, AlertCircle, Github, Twitter } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function LoginPage() {
   const { login } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get('redirect') || '/';
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -55,7 +57,7 @@ export default function LoginPage() {
     
     try {
       await login(formData.email, formData.password);
-      router.push('/');
+      router.push(redirectTo);
     } catch (error) {
       console.error('Login failed:', error);
     } finally {
