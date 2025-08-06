@@ -12,7 +12,25 @@ function CheckoutSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [orderId, setOrderId] = useState('');
-  const [orderData, setOrderData] = useState<any>(null);
+  const [orderData, setOrderData] = useState<{
+    orderId: string;
+    customerName: string;
+    customerEmail: string;
+    customerPhone: string;
+    customerAddress: string;
+    items: Array<{
+      id: string;
+      name: string;
+      price: number;
+      quantity: number;
+      image: string;
+    }>;
+    subtotal: number;
+    tax: number;
+    total: number;
+    paymentMethod: string;
+    transactionId: string;
+  } | null>(null);
   const [showReviewRequest, setShowReviewRequest] = useState(false);
 
   useEffect(() => {

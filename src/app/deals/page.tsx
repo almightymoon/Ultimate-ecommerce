@@ -49,11 +49,25 @@ function DealsContent() {
         const dealsData = await response.json();
         
         // Transform the data to match our interface
-        const transformedDeals: Deal[] = dealsData.map((deal: any) => ({
+        const transformedDeals: Deal[] = dealsData.map((deal: {
+          id: string;
+          title: string;
+          originalPrice?: number;
+          price?: number;
+          discount?: number;
+          image: string;
+          category: string;
+          endDate: string;
+          stock?: number;
+          sold?: number;
+          badge?: string;
+          description: string;
+          featured?: boolean;
+        }) => ({
           id: deal.id,
           name: deal.title,
-          originalPrice: deal.originalPrice || deal.price * 1.2, // Estimate original price
-          salePrice: deal.price || deal.originalPrice * 0.8, // Estimate sale price
+          originalPrice: deal.originalPrice || (deal.price ? deal.price * 1.2 : 100), // Estimate original price
+          salePrice: deal.price || (deal.originalPrice ? deal.originalPrice * 0.8 : 80), // Estimate sale price
           discount: deal.discount || 20,
           image: deal.image,
           category: deal.category,
@@ -172,7 +186,7 @@ function DealsContent() {
               Hot Deals & Flash Sales
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Don't miss out on these incredible deals! Limited time offers with massive discounts on premium products.
+              Don&apos;t miss out on these incredible deals! Limited time offers with massive discounts on premium products.
             </p>
           </div>
         </div>
@@ -190,7 +204,7 @@ function DealsContent() {
               <TrendingUp className="w-8 h-8" />
               <h2 className="text-2xl font-bold">Flash Sale Active!</h2>
             </div>
-            <p className="text-lg">Up to 50% off on selected items. Hurry, these deals won't last!</p>
+            <p className="text-lg">Up to 50% off on selected items. Hurry, these deals won&apos;t last!</p>
           </motion.div>
         </div>
       </section>
@@ -455,7 +469,7 @@ function DealsContent() {
             viewport={{ once: true }}
             className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl p-8 text-center text-white"
           >
-            <h2 className="text-3xl font-bold mb-4">Don't Miss Out!</h2>
+            <h2 className="text-3xl font-bold mb-4">Don&apos;t Miss Out!</h2>
             <p className="text-xl mb-6 opacity-90">
               Subscribe to get notified about new deals and flash sales
             </p>

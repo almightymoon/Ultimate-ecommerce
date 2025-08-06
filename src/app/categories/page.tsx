@@ -303,7 +303,7 @@ function CategoriesContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white border border-gray-200 rounded-3xl p-8 shadow-lg text-center">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Can't Find What You're Looking For?
+              Can&apos;t Find What You&apos;re Looking For?
             </h2>
             <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
               Browse our complete product catalog or contact our support team for assistance.

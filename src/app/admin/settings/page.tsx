@@ -59,7 +59,7 @@ export default function SettingsPage() {
 
   const handleSettingChange = (category: keyof Settings, key: string, value: string | boolean | number) => {
     setSettings(prev => {
-      const categorySettings = prev[category] as Record<string, any>;
+      const categorySettings = prev[category] as Record<string, string | boolean | number>;
       return {
         ...prev,
         [category]: {
